@@ -1,17 +1,6 @@
-# Initializing for Sandbox
-
-```
-rm -rf .terraform
-export AWS_PROFILE=sandbox
-terraform init
-terraform workspace select sandbox
-```
-
-# Initializing for production
-
-```
-rm -rf .terraform
-export AWS_PROFILE=scos-alm
-terraform init -backend-config=scos-alm-terraform-state
-terraform workspace select alm
-```
+The Terraform code creates the following resources in AWS:
+* a VPC that has the name specified in the tfvars file
+* public, private and protected subnet in each availability zone. The subnets were setup following recommendations from the following papers: [Practical VPC Design]( https://medium.com/aws-activate-startup-blog/practical-vpc-design-8412e1a18dcc) and [Building a Modular and Scalable Virtual Network Architecture with Amazon VPC](https://docs.aws.amazon.com/quickstart/latest/vpc/architecture.html)
+* Associated Routing tables for each of the subnets. The public subnet is associated with an internet Gateway while the private and protected subnets are associated with NAT Gateways
+* Ability to create a single NAT gateway for the entire VPC or a NAT Gateway per Availability Zone. Creating a NAT Gateway per Availability Zone ensures High Availability but is more expensive to run (around $400/NAT Gateway instance). It is recommended to only use multiple NAT Gateways in Production.
+* VPN Gateway that is attached to the VPC
