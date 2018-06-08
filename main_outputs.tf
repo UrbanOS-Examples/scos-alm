@@ -4,6 +4,22 @@ output "vpc_id" {
   value       = "${module.vpc.vpc_id}"
 }
 
+## Public Route table ids
+output "public_route_table_ids" {
+  description = "Public route table ids"
+  value       = "${module.vpc.public_route_table_ids}"
+}
+
+output "private_route_table_ids" {
+  description = "Private route table ids"
+  value       = "${module.vpc.private_route_table_ids}"
+}
+
+output "vpc_cidr_block" {
+  description = "CIDR block for the VPC"
+  value       = "${module.vpc.vpc_cidr_block}"
+}
+
 # Subnets
 output "private_subnets" {
   description = "List of IDs of private subnets"
