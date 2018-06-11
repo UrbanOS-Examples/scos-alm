@@ -8,7 +8,7 @@ credentials_profile = "jenkins"
 
 vpc_private_subnets = ["10.0.0.0/19", "10.0.64.0/19", "10.0.128.0/19"]
 
-#vpc_public_subnets = ["10.0.32.0/20", "10.0.96.0/20", "10.0.160.0/20"]
+vpc_public_subnets = ["10.0.32.0/20", "10.0.96.0/20", "10.0.160.0/20"]
 
 vpc_azs = ["us-east-2a", "us-east-2b", "us-east-2c"]
 
