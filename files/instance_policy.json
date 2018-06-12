@@ -2,6 +2,7 @@
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Effect": "Allow",
             "Action": [
                 "ecs:*",
                 "elasticloadbalancing:Describe*",
@@ -12,8 +13,51 @@
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
-            "Resource": "*",
-            "Effect": "Allow"
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "arn:aws:s3:::scos-alm-terraform-state"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": "arn:aws:s3:::scos-alm-terraform-state/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "s3:ListAllMyBuckets",
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:DeleteItem"
+            ],
+            "Resource": "arn:aws:dynamodb:us-east-2:199837183662:table/terraform_lock"
+        },
+        {
+            "Sid": "123",
+            "Effect": "Allow",
+            "Action": [
+                "sts:*"
+            ],
+            "Resource": [
+                "arn:aws:iam::199837183662:role/jenkins_role",
+                "arn:aws:iam::073132350570:role/jenkins_role",
+                "arn:aws:iam::647770347641:role/jenkins_role",
+                "arn:aws:iam::374013108165:role/jenkins_role"
+            ]
         }
     ]
 }
