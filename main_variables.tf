@@ -80,3 +80,21 @@ variable "openvpn_admin_username" {
 variable "openvpn_admin_password_secret_arn" {
   description = "AWS SecretsManager ARN for the OpenVPN admin password"
 }
+
+variable "cota_ui_host" {
+  description = "DNS entry or IP of the COTA UI"
+
+  # localhost so the container doesn't blow up in sandbox env.
+  default = "localhost"
+}
+
+variable "streaming_consumer_host" {
+  description = "DNS entry or IP of the streaming consumer"
+
+  # localhost so the container doesn't blow up in sandbox env.
+  default = "localhost"
+}
+
+variable "alm_account_id" {
+  description = "Account id of the ALM environment (should match deployment_identifier env)"
+}
