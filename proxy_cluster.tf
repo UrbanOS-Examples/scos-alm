@@ -2,8 +2,8 @@ data "template_file" "cota_proxy_definition" {
   template = "${file("proxy-cluster/cota.json")}"
 
   vars {
-    ui_host        = "${var.ui_host}"
-    websocket_host = "${var.websocket_host}"
+    ui_host        = "${var.cota_ui_host}"
+    websocket_host = "${var.streaming_consumer_host}"
     alm_account_id = "${var.alm_account_id}"
   }
 }
@@ -27,13 +27,14 @@ resource "aws_ecs_service" "cota-proxy" {
 # I don't like this module we're using here and for the Jenkins cluster.
 # It uses a sleep instead of properly resolving its resource dependency graph.
 # We should consider creating the cluster from scratch ourselves.
+
 module "proxy_cluster" {
   source  = "infrablocks/ecs-cluster/aws"
   version = "0.2.5"
 
   region     = "${var.region}"
-  vpc_id     = "${var.vpc_id}"
-  subnet_ids = "${join(",",var.subnet_ids)}"
+  vpc_id     = "${module.vpc.vpc_id}"
+  subnet_ids = "${join(",",module.vpc.private_subnets)}"
 
   component             = "proxies"
   deployment_identifier = "${var.deployment_identifier}"
