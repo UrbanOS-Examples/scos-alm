@@ -71,12 +71,7 @@ module "jenkins_cluster" {
 }
 
 module "jenkins_ecs_load_balancer" {
-  #infrablocks load balancer uses HTTPS which in turn requires a certificate.
-  #to issue these we need to set up a certificate manager. To avaoid nother
-  #wild goose chase AWS style I simply compied the module and changed the protocol to HTTP
-
-  source = "../modules/elb"
-  version = "0.1.10"
+  source = "github.com/SmartColumbusOS/terraform-aws-ecs-load-balancer"
 
   region = "${var.region}"
   vpc_id = "${module.vpc.vpc_id}"
@@ -139,4 +134,3 @@ module "jenkins_service" {
   ecs_cluster_id = "${module.jenkins_cluster.cluster_id}"
   ecs_cluster_service_role_arn = "${module.jenkins_cluster.service_role_arn}"
 }
-
