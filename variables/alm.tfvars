@@ -65,8 +65,8 @@ directory_name = "jenkins_home"
 efs_encrypted = true
 
 # COTA Streaming data proxy
-cota_ui_host = "internal-a4244d43570cc11e8a71c02598f28489-1213344449.us-east-2.elb.amazonaws.com"
+cota_ui_host = "internal-aaf7592cd74a211e8aaab0220da05cdb-1489291674.us-east-2.elb.amazonaws.com"
 
-streaming_consumer_host = "internal-a165a2ee470cc11e8a71c02598f28489-494078599.us-east-2.elb.amazonaws.com"
+streaming_consumer_host = "internal-aa39c14d674a211e8aaab0220da05cdb-1804404161.us-east-2.elb.amazonaws.com"
 
 alm_account_id = "199837183662"
