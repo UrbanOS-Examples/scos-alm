@@ -15,8 +15,8 @@ resource "aws_security_group" "jenkins_relay_sg" {
   vpc_id = "${module.vpc.vpc_id}"
 
   ingress {
-    from_port   = 1478
-    to_port     = 1478
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
   }
