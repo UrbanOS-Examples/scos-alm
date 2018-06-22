@@ -44,8 +44,8 @@ module "proxy_cluster" {
   cluster_instance_iam_policy_contents = "${file("proxy-cluster/instance_policy.json")}"
 
   # in order to update running containers, we need at least 2 instances
-  cluster_minimum_size     = "2"
-  cluster_maximum_size     = "2"
-  cluster_desired_capacity = "2"
+  cluster_minimum_size     = "3"
+  cluster_maximum_size     = "3"
+  cluster_desired_capacity = "3"
   allowed_cidrs            = "${var.allowed_cidrs}"
 }
