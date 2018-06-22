@@ -1,10 +1,14 @@
 variable "component" {
   description = "The component this cluster will contain"
-  default = "delivery-pipeline"
+  default     = "delivery-pipeline"
 }
 
 variable "deployment_identifier" {
   description = "An identifier for this instantiation"
+}
+
+variable "docker_registry" {
+  description = "The URL of the docker registry"
 }
 
 #cluster variables
@@ -49,7 +53,7 @@ variable "cluster_desired_capacity" {
 
 variable "allowed_cidrs" {
   description = "The CIDRs allowed access to containers"
-  type = "list"
+  type        = "list"
   default     = ["10.0.0.0/8"]
 }
 
@@ -72,32 +76,33 @@ variable "private_zone_id" {
 
 variable "allow_lb_cidrs" {
   description = "A list of CIDRs from which the ELB is reachable"
-  type = "list"
+  type        = "list"
 }
 
 variable "include_public_dns_record" {
   description = "Whether or not to create a public DNS record"
-  default = "no"
+  default     = "no"
 }
 
 variable "include_private_dns_record" {
   description = "Whether or not to create a private DNS record"
-    default = "yes"
+  default     = "yes"
 }
 
 variable "expose_to_public_internet" {
   description = "Whether or not the ELB is publicly accessible"
-  default = "no"
+  default     = "no"
 }
 
 #service variables
 variable "service_name" {
   description = "The name of the service being created"
-	default     = "jenkins_master"
+  default     = "jenkins_master"
 }
 
 variable "service_image" {
   description = "The docker image (including version) to deploy"
+  default     = "scos/jenkins-master:latest"
 }
 
 variable "service_task_container_definitions" {
@@ -117,8 +122,8 @@ variable "service_elb_name" {
 
 variable "service_command" {
   description = "The command to run to start the container."
-  type = "list"
-  default = []
+  type        = "list"
+  default     = []
 }
 
 variable "memory" {
@@ -132,16 +137,31 @@ variable "directory_name" {
 # ------------- EFS -----------------------------
 variable "efs_name" {
   description = "EFS name"
-  default = "jenkins"
+  default     = "jenkins"
 }
 
 variable "efs_mode" {
   description = "xfer mode:  generalPurpose OR maxIO"
-  default = "generalPurpose"
+  default     = "generalPurpose"
 }
 
 variable "efs_encrypted" {
   description = "Is EFS encrypted?  true/false"
-  type = "string"
-  default = true
+  type        = "string"
+  default     = true
+}
+
+# Jenkins Relay Variables
+variable "jenkins_relay_user_data_template" {
+  description = "Location of the userdata template for the jenkins relay"
+  default     = "templates/jenkins_relay_userdata.sh.tpl"
+}
+
+variable "jenkins_relay_github_secret" {
+  description = "Secret token for jenkins api access"
+}
+
+variable "jenkins_relay_docker_image" {
+  description = "Docker image for the jenkins relay"
+  default     = "scos/jenkins-relay:latest"
 }

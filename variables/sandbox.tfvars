@@ -8,8 +8,12 @@ credentials_profile = "sandbox"
 
 openvpn_admin_password_secret_arn = "arn:aws:secretsmanager:us-east-2:068920858268:secret:openvpn_admin_password-8p4kVH"
 
+docker_registry = "068920858268.dkr.ecr.us-east-2.amazonaws.com"
+
 # Jenkins
 deployment_identifier = "sandbox"
+
+jenkins_relay_github_secret = "IAMA_github_secret_ask_me_anything"
 
 ## Cluster variables
 cluster_instance_ssh_public_key_path = "~/.ssh/id_rsa.pub"
@@ -46,8 +50,6 @@ include_private_dns_record = "no"
 expose_to_public_internet = "no"
 
 ## Service variables
-service_image = "199837183662.dkr.ecr.us-east-2.amazonaws.com/scos/jenkins-master:latest"
-
 service_task_container_definitions = "templates/task_definition.json.tpl"
 
 attach_to_load_balancer = "yes"
