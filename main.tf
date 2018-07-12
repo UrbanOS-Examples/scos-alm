@@ -8,13 +8,14 @@ terraform {
     bucket         = "scos-sandbox-terraform-state"
     key            = "alm"
     region         = "us-east-2"
-    dynamodb_table = "terraform_lock"
+    role_arn       = "arn:aws:iam::068920858268:role/admin_role"
+    dynamodb_table = "terraform_lock_sandbox"
     encrypt        = true
   }
 }
 
 data "aws_secretsmanager_secret_version" "openvpn_admin_password" {
-  secret_id = "arn:aws:secretsmanager:us-east-2:199837183662:secret:openvpn_admin_password-beMNOa"
+  secret_id = "${var.openvpn_admin_password_secret_arn}"
 }
 
 resource "aws_key_pair" "cloud_key" {
@@ -48,4 +49,8 @@ variable "allowed_cidrs" {
   description = "The CIDRs allowed access to containers"
   type        = "list"
   default     = ["0.0.0.0/0"]
+}
+
+variable "openvpn_admin_password_secret_arn" {
+  description = "The arn of the openvpn admin password."
 }
