@@ -5,7 +5,7 @@ wget https://dl.eff.org/certbot-auto
 
 #generate certificate
 chmod +x certbot-auto
-./certbot-auto certonly --agree-tos --email jmorris2@pillartechnology.com --standalone -d ${dns_name} -n
+./certbot-auto certonly --agree-tos --email scos_alm_account@pillartechnology.com --standalone -d ${dns_name} -n
 
 apt-get update
 apt-get install -y nginx
@@ -44,3 +44,5 @@ EOF
 ln -s /etc/nginx/sites-available/jenkins-relay /etc/nginx/sites-enabled/jenkins-relay
 
 service nginx restart
+
+0 0,12 * * * python -c 'import random; import time; time.sleep(random.random() * 3600)' && /certbot-auto renew

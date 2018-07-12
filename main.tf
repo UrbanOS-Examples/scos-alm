@@ -58,3 +58,17 @@ module "vpn" {
   admin_password    = "${data.aws_secretsmanager_secret_version.openvpn_admin_password.secret_string}"
   key_name          = "${aws_key_pair.cloud_key.key_name}"
 }
+
+module "proxy_cluster" {
+  source = "../modules/proxy-cluster"
+
+  region                               = "${var.region}"
+  vpc_id                               = "${module.vpc.vpc_id}"
+  subnet_ids                           = "${module.vpc.private_subnets}"
+  deployment_identifier                = "${var.deployment_identifier}"
+  cluster_instance_ssh_public_key_path = "${var.cluster_instance_ssh_public_key_path}"
+  allowed_cidrs                        = "${var.allowed_cidrs}"
+  ui_host                              = "${var.cota_ui_host}"
+  websocket_host                       = "${var.streaming_consumer_host}"
+  alm_account_id                       = "${var.alm_account_id}"
+}
