@@ -98,3 +98,8 @@ variable "streaming_consumer_host" {
 variable "alm_account_id" {
   description = "Account id of the ALM environment (should match deployment_identifier env)"
 }
+
+variable "key_pair_public_key" {
+  description = "The public key used to create a key pair"
+}
+
