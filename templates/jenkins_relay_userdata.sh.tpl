@@ -45,4 +45,5 @@ ln -s /etc/nginx/sites-available/jenkins-relay /etc/nginx/sites-enabled/jenkins-
 
 service nginx restart
 
-0 0,12 * * * python -c 'import random; import time; time.sleep(random.random() * 3600)' && /certbot-auto renew
+echo "0 0,12 * * * python -c 'import random; import time; time.sleep(random.random() * 3600)' && /certbot-auto renew" >> /root/cert-renew.cron
+crontab /root/cert-renew.cron
