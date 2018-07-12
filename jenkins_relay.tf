@@ -57,11 +57,6 @@ resource "aws_route53_record" "github-webhook" {
   records = ["${aws_instance.jenkins_relay.public_ip}"]
 }
 
-resource "aws_acm_certificate_validation" "cert" {
-  certificate_arn         = "${aws_acm_certificate.cert.arn}"
-  validation_record_fqdns = ["${aws_route53_record.cert_validation.fqdn}"]
-}
-
 resource "aws_instance" "jenkins_relay" {
   ami                    = "ami-04370661"
   instance_type          = "t2.nano"
