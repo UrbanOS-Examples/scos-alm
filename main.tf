@@ -8,7 +8,8 @@ terraform {
     bucket         = "scos-sandbox-terraform-state"
     key            = "alm"
     region         = "us-east-2"
-    dynamodb_table = "terraform_lock"
+    role_arn       = "arn:aws:iam::068920858268:role/admin_role"
+    dynamodb_table = "terraform_lock_sandbox"
     encrypt        = true
   }
 }
@@ -22,53 +23,34 @@ resource "aws_key_pair" "cloud_key" {
   public_key = "${var.key_pair_public_key}"
 }
 
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "1.32.0"
-
-  name = "${var.vpc_name}"
-  cidr = "${var.vpc_cidr}"
-  azs  = "${var.vpc_azs}"
-
-  private_subnets = "${var.vpc_private_subnets}"
-  public_subnets  = "${var.vpc_public_subnets}"
-
-  enable_nat_gateway = "${var.vpc_enable_nat_gateway}"
-  single_nat_gateway = "${var.vpc_single_nat_gateway}"
-
-  enable_vpn_gateway       = "${var.vpc_enable_vpn_gateway}"
-  enable_s3_endpoint       = "${var.vpc_enable_s3_endpoint}"
-  enable_dynamodb_endpoint = "${var.vpc_enable_dynamodb_endpoint}"
-  enable_dns_hostnames     = "${var.vpc_enable_dns_hostnames}"
-
-  tags = {
-    Owner       = "${var.owner}"
-    Environment = "${var.environment}"
-    Name        = "${var.vpc_name}"
-  }
+variable "region" {
+  description = "AWS Region"
+  default     = "us-east-2"
 }
 
-module "vpn" {
-  source = "../modules/vpn"
-
-  private_subnet_id = "${module.vpc.private_subnets[0]}"
-  public_subnet_id  = "${module.vpc.public_subnets[0]}"
-  vpc_id            = "${module.vpc.vpc_id}"
-  admin_user        = "${var.openvpn_admin_username}"
-  admin_password    = "${data.aws_secretsmanager_secret_version.openvpn_admin_password.secret_string}"
-  key_name          = "${aws_key_pair.cloud_key.key_name}"
+variable "credentials_profile" {
+  description = "The AWS credentials profile to use for this execution"
 }
 
-module "proxy_cluster" {
-  source = "../modules/proxy-cluster"
+variable "owner" {
+  description = "User creating this VPC. It should be done through jenkins"
+  default     = "jenkins"
+}
 
-  region                               = "${var.region}"
-  vpc_id                               = "${module.vpc.vpc_id}"
-  subnet_ids                           = "${module.vpc.private_subnets}"
-  deployment_identifier                = "${var.deployment_identifier}"
-  cluster_instance_ssh_public_key_path = "${var.cluster_instance_ssh_public_key_path}"
-  allowed_cidrs                        = "${var.allowed_cidrs}"
-  ui_host                              = "${var.cota_ui_host}"
-  websocket_host                       = "${var.streaming_consumer_host}"
-  alm_account_id                       = "${var.alm_account_id}"
+variable "environment" {
+  description = "VPC environment. It can be sandbox, dev, staging or production"
+}
+
+variable "cluster_instance_ssh_public_key_path" {
+  description = "AWS The path to the public key to use for the container instances"
+}
+
+variable "allowed_cidrs" {
+  description = "The CIDRs allowed access to containers"
+  type        = "list"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "openvpn_admin_password_secret_arn" {
+  description = "The arn of the openvpn admin password."
 }
