@@ -4,7 +4,7 @@ data "template_file" "jenkins_relay_user_data" {
   vars {
     jenkins_host = "${module.jenkins_ecs_load_balancer.dns_name}"
     jenkins_port = 80
-    dns_name     = "ci-webhook.${var.environment}.smartcolumbusos.com"
+    dns_name     = "ci-webhook.${var.environment}.${var.root_domain_name}"
   }
 }
 
@@ -45,13 +45,9 @@ resource "aws_security_group" "jenkins_relay_sg" {
   }
 }
 
-resource "aws_route53_zone" "smartcolumbusos_hosted_zone" {
-  name = "${var.environment}.smartcolumbusos.com"
-}
-
 resource "aws_route53_record" "github-webhook" {
-  zone_id = "${aws_route53_zone.smartcolumbusos_hosted_zone.zone_id}"
-  name    = "ci-webhook.${var.environment}.smartcolumbusos.com"
+  zone_id = "${aws_route53_zone.smartcolumbusos_public_hosted_zone.zone_id}"
+  name    = "ci-webhook.${var.environment}.${var.root_domain_name}"
   type    = "A"
   ttl     = "300"
   records = ["${aws_instance.jenkins_relay.public_ip}"]
@@ -73,5 +69,5 @@ resource "aws_instance" "jenkins_relay" {
 
 variable "jenkins_relay_github_secret" {
   description = "Secret token for jenkins api access"
-  default = "IAMA_github_secret_ask_me_anything"
+  default     = "IAMA_github_secret_ask_me_anything"
 }

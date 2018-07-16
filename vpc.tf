@@ -112,3 +112,7 @@ output "nat_public_ips" {
   description = "List of public Elastic IPs created for AWS NAT Gateway"
   value       = ["${module.vpc.nat_public_ips}"]
 }
+
+variable "key_pair_public_key" {
+  description = "The public key used to create a key pair"
+}
