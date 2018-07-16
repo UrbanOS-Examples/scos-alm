@@ -54,3 +54,7 @@ variable "allowed_cidrs" {
 variable "openvpn_admin_password_secret_arn" {
   description = "The arn of the openvpn admin password."
 }
+
+variable "key_pair_public_key" {
+  description = "The public key used to create a key pair"
+}
