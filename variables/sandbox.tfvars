@@ -9,7 +9,8 @@ openvpn_admin_password_secret_arn = "arn:aws:secretsmanager:us-east-2:0689208582
 docker_registry = "068920858268.dkr.ecr.us-east-2.amazonaws.com"
 
 ## Cluster variables
-cluster_instance_ssh_public_key_path = "~/.ssh/id_rsa.pub"
+cluster_instance_ssh_public_key_path = "files/oasis_id_rsa.pub"
+cluster6_instance_ssh_public_key_path = "files/oasis6_id_rsa.pub"
 
 cluster_instance_type = "t2.small"
 

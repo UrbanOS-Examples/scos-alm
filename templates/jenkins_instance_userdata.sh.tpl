@@ -3,9 +3,6 @@
 export log=/var/log/user_data.sh.log
 export docker_data_dir=${mount_point}/${directory_name}
 
-echo "About to define ecs.config file" >> $log
-echo ECS_CLUSTER=${cluster_name} >> /etc/ecs/ecs.config
-
 echo "About to run yum update" >> $log
 yum -y update
 echo "About to install efs utils via yum" >> $log
@@ -48,9 +45,15 @@ if [ $mount_successful -eq 0 ] ; then
   echo "Since the EFS mount was successful, need to change the permissions on $docker_data_dir directory." >> $log
   mkdir -p $docker_data_dir
   chmod 777 $docker_data_dir
-  container_id=`docker ps |fgrep ${docker_image}|awk '{print $1}'`
-  docker kill $container_id
-  docker rm $container_id
 fi
+
+echo "Stopping ECS daemon" >> $log
+initctl stop ecs
+
+echo "Updating ecs.config file" >> $log
+echo ECS_CLUSTER=${cluster_name} >> /etc/ecs/ecs.config
+
+echo "Starting ECS daemon" >> $log
+initctl start ecs
 
 echo "Exiting user_data.sh" >> $log

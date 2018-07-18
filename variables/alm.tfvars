@@ -14,7 +14,8 @@ vpc_azs = ["us-east-2a", "us-east-2b", "us-east-2c"]
 
 docker_registry = "199837183662.dkr.ecr.us-east-2.amazonaws.com"
 
-cluster_instance_ssh_public_key_path = "~/.ssh/id_rsa.pub"
+cluster_instance_ssh_public_key_path = "files/oasis_id_rsa.pub"
+cluster6_instance_ssh_public_key_path = "files/oasis6_id_rsa.pub"
 
 cluster_instance_type = "t2.small"
 
