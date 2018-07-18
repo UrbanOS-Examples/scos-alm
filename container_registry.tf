@@ -25,3 +25,10 @@ module "streaming_service_smoke_test_repository" {
   alm_account_id  = "${var.alm_account_id}"
   repository_name = "streaming-service-smoke-test"
 }
+
+module "cota_streaming_ui_smoke_test_repository" {
+  source = "../modules/ecr"
+
+  alm_account_id  = "${var.alm_account_id}"
+  repository_name = "cota-streaming-ui-smoke-test"
+}
