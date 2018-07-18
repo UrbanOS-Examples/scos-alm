@@ -2,7 +2,7 @@ vpc_name = "alm"
 
 environment = "alm"
 
-root_domain_name = "smartcolumbusos.com"
+root_dns_name = "smartcolumbusos.com"
 
 credentials_profile = "jenkins"
 

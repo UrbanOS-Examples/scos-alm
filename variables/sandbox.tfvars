@@ -2,7 +2,7 @@ vpc_name = "sandbox-alm"
 
 environment = "sandbox-alm"
 
-root_domain_name = "smartcolumbusos.com"
+root_dns_name = "smartcolumbusos.com"
 
 credentials_profile = "sandbox"
 
