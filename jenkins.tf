@@ -7,7 +7,6 @@ data "template_file" "instance_user_data" {
     directory_name           = "${local.directory_name}"
     efs_file_system_dns_name = "${module.jenkins_efs.dns_name}"
     efs_file_system_id       = "${module.jenkins_efs.efs_id}"
-    docker_image             = "${var.docker_registry}/${local.service_image}"
   }
 }
 
@@ -138,7 +137,7 @@ locals {
   component       = "delivery-pipeline"
   service_port    = 8080
   service_name    = "jenkins_master"
-  service_image   = "scos/jenkins-master:latest"
+  service_image   = "scos/jenkins-master:2e59b3c55c31f57cf800024be4285f0d26e70652"
   service_command = []
   directory_name  = "jenkins_home"
 }
