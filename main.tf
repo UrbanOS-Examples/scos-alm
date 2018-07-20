@@ -5,11 +5,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket         = "scos-sandbox-terraform-state"
     key            = "alm"
-    region         = "us-east-2"
-    role_arn       = "arn:aws:iam::068920858268:role/admin_role"
-    dynamodb_table = "terraform_lock_sandbox"
     encrypt        = true
   }
 }
