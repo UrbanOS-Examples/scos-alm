@@ -137,7 +137,7 @@ locals {
   component       = "delivery-pipeline"
   service_port    = 8080
   service_name    = "jenkins_master"
-  service_image   = "scos/jenkins-master:2e59b3c55c31f57cf800024be4285f0d26e70652"
+  service_image   = "scos/jenkins-master:034be0030adb007ad945af2f90711fdc5cc1f02e"
   service_command = []
   directory_name  = "jenkins_home"
 }
