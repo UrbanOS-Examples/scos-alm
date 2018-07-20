@@ -1,12 +1,30 @@
+data "terraform_remote_state" "durable" {
+  backend   = "s3"
+  workspace = "${terraform.workspace}"
+
+  config {
+    bucket   = "${var.alm_state_bucket_name}"
+    key      = "alm-durable"
+    region   = "us-east-2"
+    role_arn = "${var.alm_role_arn}"
+  }
+}
+
+locals {
+  efs_dns_name = "${data.terraform_remote_state.durable.jenkins_efs_dns_name}"
+  efs_id       = "${data.terraform_remote_state.durable.jenkins_efs_id}"
+}
+
 data "template_file" "instance_user_data" {
   template = "${file("templates/jenkins_instance_userdata.sh.tpl")}"
 
   vars {
-    cluster_name             = "${module.jenkins_cluster.cluster_name}"
-    mount_point              = "/efs"
-    directory_name           = "${local.directory_name}"
-    efs_file_system_dns_name = "${module.jenkins_efs.dns_name}"
-    efs_file_system_id       = "${module.jenkins_efs.efs_id}"
+    cluster_name   = "${module.jenkins_cluster.cluster_name}"
+    mount_point    = "/efs"
+    directory_name = "${local.directory_name}"
+
+    efs_file_system_dns_name = "${local.efs_dns_name}"
+    efs_file_system_id       = "${local.efs_id}"
   }
 }
 
@@ -26,20 +44,12 @@ data "template_file" "task_definition" {
   }
 }
 
-module "jenkins_efs" {
-  source = "../modules/efs"
-
-  efs_name      = "jenkins"
-  efs_mode      = "generalPurpose"
-  efs_encrypted = true
-}
-
 module "jenkins_mount_targets" {
   source  = "../modules/efs_mount_target"
   sg_name = "jenkins-data"
   vpc_id  = "${module.vpc.vpc_id}"
   subnet  = "${module.vpc.private_subnets[0]}"
-  efs_id  = "${module.jenkins_efs.efs_id}"
+  efs_id  = "${local.efs_id}"
 
   mount_target_tags = {
     "name"        = "jenkins"
@@ -142,6 +152,14 @@ locals {
   directory_name  = "jenkins_home"
 }
 
+variable "alm_role_arn" {
+  description = "The ARN for the assume role for ALM access"
+}
+
+variable "alm_state_bucket_name" {
+  description = "The name of the S3 state bucket for ALM"
+}
+
 variable "docker_registry" {
   description = "The URL of the docker registry"
 }
@@ -178,19 +196,4 @@ variable "jenkins_relay_user_data_template" {
 variable "jenkins_relay_docker_image" {
   description = "Docker image for the jenkins relay"
   default     = "scos/jenkins-relay:latest"
-}
-
-output "efs_id" {
-  description = "The ID of the EFS"
-  value       = "${module.jenkins_efs.efs_id}"
-}
-
-output "kms_key_id" {
-  description = "The ARN for the KMS encryption key"
-  value       = "${module.jenkins_efs.kms_key_id}"
-}
-
-output "dns_name" {
-  description = "The DNS name for the filesystem"
-  value       = "${module.jenkins_efs.dns_name}"
 }
