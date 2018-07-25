@@ -13,6 +13,11 @@ terraform {
   }
 }
 
+variable "sandbox" {
+  description = "Behave as if we are running in sandbox (as opposed to prod)"
+  default     = true
+}
+
 variable "alm_role_arn" {
   description = "The ARN for the assume role for ALM access"
 }

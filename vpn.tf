@@ -1,4 +1,3 @@
-
 module "vpn" {
   source = "../modules/vpn"
 
@@ -8,6 +7,7 @@ module "vpn" {
   admin_user        = "${var.openvpn_admin_username}"
   admin_password    = "${data.aws_secretsmanager_secret_version.openvpn_admin_password.secret_string}"
   key_name          = "${aws_key_pair.cloud_key.key_name}"
+  sandbox           = "${var.sandbox}"
 }
 
 variable "openvpn_admin_username" {
