@@ -4,8 +4,6 @@ environment = "sandbox-alm"
 
 root_dns_name = "smartcolumbusos.com"
 
-credentials_profile = "sandbox"
-
 openvpn_admin_password_secret_arn = "arn:aws:secretsmanager:us-east-2:068920858268:secret:openvpn_admin_password-8p4kVH"
 
 docker_registry = "068920858268.dkr.ecr.us-east-2.amazonaws.com"

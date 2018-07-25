@@ -151,15 +151,6 @@ locals {
   service_command = []
   directory_name  = "jenkins_home"
 }
-
-variable "alm_role_arn" {
-  description = "The ARN for the assume role for ALM access"
-}
-
-variable "alm_state_bucket_name" {
-  description = "The name of the S3 state bucket for ALM"
-}
-
 variable "docker_registry" {
   description = "The URL of the docker registry"
 }

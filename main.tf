@@ -1,13 +1,24 @@
 provider "aws" {
-  region  = "${var.region}"
-  profile = "${var.credentials_profile}"
+  region = "${var.region}"
+
+  assume_role {
+    role_arn = "${var.alm_role_arn}"
+  }
 }
 
 terraform {
   backend "s3" {
-    key            = "alm"
-    encrypt        = true
+    key     = "alm"
+    encrypt = true
   }
+}
+
+variable "alm_role_arn" {
+  description = "The ARN for the assume role for ALM access"
+}
+
+variable "alm_state_bucket_name" {
+  description = "The name of the S3 state bucket for ALM"
 }
 
 data "aws_secretsmanager_secret_version" "openvpn_admin_password" {
@@ -22,10 +33,6 @@ resource "aws_key_pair" "cloud_key" {
 variable "region" {
   description = "AWS Region"
   default     = "us-east-2"
-}
-
-variable "credentials_profile" {
-  description = "The AWS credentials profile to use for this execution"
 }
 
 variable "owner" {
