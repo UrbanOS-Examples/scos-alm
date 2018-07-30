@@ -10,6 +10,10 @@
       {
         "containerPort": ${port},
         "hostPort": ${port}
+      },
+      {
+        "containerPort": 50000,
+        "hostPort": 50000
       }
     ],
     "mountPoints": [
