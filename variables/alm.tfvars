@@ -20,7 +20,7 @@ cluster_instance_ssh_public_key_path = "files/oasis_id_rsa.pub"
 
 cluster6_instance_ssh_public_key_path = "files/oasis6_id_rsa.pub"
 
-cluster_instance_type = "t2.small"
+cluster_instance_type = "t2.medium"
 
 cluster_minimum_size = 1
 

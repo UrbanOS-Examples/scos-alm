@@ -36,7 +36,8 @@ data "template_file" "task_definition" {
     image          = "${var.docker_registry}/${local.service_image}"
     memory         = "1024"
     command        = "${jsonencode(local.service_command)}"
-    port           = "${local.service_port}"
+    jenkins_port   = "${local.jenkins_port}"
+    jnlp_port      = "${local.jnlp_port}"
     region         = "${var.region}"
     log_group      = "${module.jenkins_service.log_group}"
     elb_name       = "${module.jenkins_ecs_load_balancer.name}"
@@ -91,7 +92,9 @@ module "jenkins_ecs_load_balancer" {
   deployment_identifier = "${var.environment}"
 
   service_name            = "${terraform.workspace}_${local.service_name}"
-  service_port            = "${local.service_port}"
+  service_port            = "${local.jenkins_port}"
+  listener_ports          = "${local.listener_ports}"
+  ingress_rules           = "${local.ingress_rules}"
   service_certificate_arn = ""
 
   domain_name = "${var.domain_name}"
@@ -118,7 +121,7 @@ module "jenkins_service" {
 
   service_name                       = "${local.service_name}"
   service_image                      = "${var.docker_registry}/${local.service_image}"
-  service_port                       = "${local.service_port}"
+  service_port                       = "${local.jenkins_port}"
   service_task_container_definitions = "${data.template_file.task_definition.rendered}"
 
   service_desired_count                      = "1"
@@ -145,7 +148,36 @@ module "jenkins_service" {
 
 locals {
   component       = "delivery-pipeline"
-  service_port    = 8080
+  jenkins_port    = 8080
+  jnlp_port       = 50000
+  listener_ports  = [
+    {
+      instance_port     = "${local.jenkins_port}"
+      instance_protocol = "http"
+      lb_port           = 80
+      lb_protocol       = "http"
+    },
+    {
+      instance_port     = "${local.jnlp_port}"
+      instance_protocol = "tcp"
+      lb_port           = "${local.jnlp_port}"
+      lb_protocol       = "tcp"
+    },
+  ]
+  ingress_rules = [
+    {
+      from_port = 80
+      to_port = 80
+      protocol = "tcp"
+      cidr_blocks = ["${var.allowed_cidrs}"]
+    },
+    {
+      from_port = "${local.jnlp_port}"
+      to_port = "${local.jnlp_port}"
+      protocol = "tcp"
+      cidr_blocks = ["${var.allowed_cidrs}"]
+    },
+  ]
   service_name    = "jenkins_master"
   service_image   = "scos/jenkins-master:034be0030adb007ad945af2f90711fdc5cc1f02e"
   service_command = []
