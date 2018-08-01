@@ -34,7 +34,7 @@ data "template_file" "task_definition" {
   vars {
     name           = "${local.service_name}"
     image          = "${var.docker_registry}/${local.service_image}"
-    memory         = "1024"
+    memory         = "3072"
     command        = "${jsonencode(local.service_command)}"
     jenkins_port   = "${local.jenkins_port}"
     jnlp_port      = "${local.jnlp_port}"
