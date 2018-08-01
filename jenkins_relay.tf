@@ -53,6 +53,14 @@ resource "aws_route53_record" "github-webhook" {
   records = ["${aws_instance.jenkins_relay.public_ip}"]
 }
 
+resource "aws_route53_record" "github-webhook_private" {
+  zone_id = "${aws_route53_zone.private_hosted_zone.zone_id}"
+  name    = "ci-webhook.${var.environment}.${var.root_dns_name}"
+  type    = "A"
+  ttl     = "300"
+  records = ["${aws_instance.jenkins_relay.public_ip}"]
+}
+
 resource "aws_instance" "jenkins_relay" {
   ami                    = "ami-04370661"
   instance_type          = "t2.nano"
