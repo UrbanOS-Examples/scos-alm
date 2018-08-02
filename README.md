@@ -1,6 +1,25 @@
-The Terraform code creates the following resources in AWS:
-* a VPC that has the name specified in the tfvars file
-* public, private and protected subnet in each availability zone. The subnets were setup following recommendations from the following papers: [Practical VPC Design]( https://medium.com/aws-activate-startup-blog/practical-vpc-design-8412e1a18dcc) and [Building a Modular and Scalable Virtual Network Architecture with Amazon VPC](https://docs.aws.amazon.com/quickstart/latest/vpc/architecture.html)
-* Associated Routing tables for each of the subnets. The public subnet is associated with an internet Gateway while the private and protected subnets are associated with NAT Gateways
-* Ability to create a single NAT gateway for the entire VPC or a NAT Gateway per Availability Zone. Creating a NAT Gateway per Availability Zone ensures High Availability but is more expensive to run (around $400/NAT Gateway instance). It is recommended to only use multiple NAT Gateways in Production.
-* VPN Gateway that is attached to the VPC
+# Application Management Lifecycle Network
+
+This Terraform project creates a Continuous Integration/Delivery environment,
+including VPC, network, Jenkins master and workers, and a VPN to grant developers access to the environment
+
+## Creating
+
+*** This project relies on [a state bucket](../bootstrap/README.md) and [alm-durable](../alm-durable/README.md) pre-existing. ***
+
+### Sandbox
+
+```bash
+terraform init --backend-config=../backends/sandbox-alm.conf
+terraform apply -var-file=variables/sandbox.tfvars
+```
+
+### Production ALM
+
+We didn't feel it was wise to allow the CI environment to modify itself,
+so updates to the ALM must be manually applied.
+
+```bash
+terraform init --backend-config=../backends/alm.conf
+terraform apply -var-file=variables/alm.tfvars
+```
