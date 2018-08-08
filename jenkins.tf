@@ -67,7 +67,7 @@ module "jenkins_cluster" {
   subnet_ids = "${join(",",module.vpc.private_subnets)}"
 
   component             = "${local.component}"
-  deployment_identifier = "${var.environment}"
+  deployment_identifier = "${terraform.workspace}-alm"
 
   cluster_name                         = "${terraform.workspace}_jenkins_cluster"
   cluster_instance_ssh_public_key_path = "${var.cluster_instance_ssh_public_key_path}"
@@ -89,7 +89,7 @@ module "jenkins_ecs_load_balancer" {
   subnet_ids = "${module.vpc.private_subnets}"
 
   component             = "${local.component}"
-  deployment_identifier = "${var.environment}"
+  deployment_identifier = "${terraform.workspace}-alm"
 
   service_name            = "${terraform.workspace}_${local.service_name}"
   service_port            = "${local.jenkins_port}"
@@ -117,7 +117,7 @@ module "jenkins_service" {
   vpc_id = "${module.vpc.vpc_id}"
 
   component             = "${local.component}"
-  deployment_identifier = "${var.environment}"
+  deployment_identifier = "${terraform.workspace}-alm"
 
   service_name                       = "${local.service_name}"
   service_image                      = "${var.docker_registry}/${local.service_image}"

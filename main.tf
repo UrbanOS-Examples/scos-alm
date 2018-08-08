@@ -31,7 +31,7 @@ data "aws_secretsmanager_secret_version" "openvpn_admin_password" {
 }
 
 resource "aws_key_pair" "cloud_key" {
-  key_name   = "cloud_key"
+  key_name   = "${terraform.workspace}_alm_cloud_key"
   public_key = "${var.key_pair_public_key}"
 }
 
