@@ -31,7 +31,7 @@ data "aws_secretsmanager_secret_version" "openvpn_admin_password" {
 }
 
 resource "aws_key_pair" "cloud_key" {
-  key_name   = "${terraform.workspace}_alm_cloud_key"
+  key_name   = "${terraform.workspace}_cloud_key"
   public_key = "${var.key_pair_public_key}"
 }
 
@@ -51,10 +51,6 @@ variable "environment" {
 
 variable "cluster_instance_ssh_public_key_path" {
   description = "AWS The path to the 'oasis@MBP-' public key to use for the container instances"
-}
-
-variable "cluster6_instance_ssh_public_key_path" {
-  description = "AWS The path to the 'oasis@MBP-6' public key to use for the container instances"
 }
 
 variable "allowed_cidrs" {
