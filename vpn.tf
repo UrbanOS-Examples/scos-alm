@@ -10,6 +10,18 @@ module "vpn" {
   sandbox           = "${var.sandbox}"
 }
 
+resource "aws_route53_record" "vpn" {
+  zone_id = "${aws_route53_zone.public_hosted_zone.zone_id}"
+  name    = "vpn"
+  type    = "A"
+  ttl     = "300"
+  records = ["${module.vpn.elastic_ip}"]
+
+  lifecycle {
+    ignore_changes = ["name", "allow_overwrite"]
+  }
+}
+
 variable "openvpn_admin_username" {
   description = "Username for the OpenVPN Access Server administrative user"
   default     = "openvpn"
