@@ -43,8 +43,8 @@ server {
   }
 
   location @handle_redirect {
-    set $saved_redirect_loc '$upstream_http_location';
-    proxy_pass $saved_redirect_loc;
+    set \$saved_redirect_loc '\$upstream_http_location';
+    proxy_pass \$saved_redirect_loc;
   }
 }
 EOF
