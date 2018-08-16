@@ -74,8 +74,3 @@ resource "aws_instance" "jenkins_relay" {
     ignore_changes = ["key_name"]
   }
 }
-
-variable "jenkins_relay_github_secret" {
-  description = "Secret token for jenkins api access"
-  default     = "IAMA_github_secret_ask_me_anything"
-}
