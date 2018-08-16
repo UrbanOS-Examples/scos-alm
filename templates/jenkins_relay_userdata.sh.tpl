@@ -34,9 +34,17 @@ server {
 
   location "/github-webhook" {
     proxy_pass http://${jenkins_host}:${jenkins_port}/github-webhook/;
+    proxy_intercept_errors on;
+    error_page 301 302 307 = @handle_redirect;
+
     limit_except POST {
       deny all;
     }
+  }
+
+  location @handle_redirect {
+    set $saved_redirect_loc '$upstream_http_location';
+    proxy_pass $saved_redirect_loc;
   }
 }
 EOF
