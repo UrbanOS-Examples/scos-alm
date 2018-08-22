@@ -59,8 +59,9 @@ module "jenkins_mount_targets" {
 }
 
 module "jenkins_cluster" {
-  source  = "infrablocks/ecs-cluster/aws"
-  version = "0.2.5"
+  source = "github.com/SmartColumbusOS/terraform-aws-ecs-cluster-1"
+  # source  = "infrablocks/ecs-cluster/aws"
+  # version = "0.2.5"
 
   region     = "${var.region}"
   vpc_id     = "${module.vpc.vpc_id}"
