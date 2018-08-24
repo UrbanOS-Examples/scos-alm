@@ -22,11 +22,9 @@ cluster_instance_ssh_public_key_path = "files/oasis_id_rsa.pub"
 
 cluster_instance_type = "t2.medium"
 
-cluster_minimum_size = 1
+cluster_minimum_size = 2
 
 cluster_maximum_size = 3
-
-cluster_desired_capacity = 2
 
 alm_account_id = "199837183662"
 

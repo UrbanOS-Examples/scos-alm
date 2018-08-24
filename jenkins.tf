@@ -78,7 +78,6 @@ module "jenkins_cluster" {
 
   cluster_minimum_size     = "${var.cluster_minimum_size}"
   cluster_maximum_size     = "${var.cluster_maximum_size}"
-  cluster_desired_capacity = "${var.cluster_desired_capacity}"
   allowed_cidrs            = "${var.allowed_cidrs}"
 }
 
@@ -205,17 +204,12 @@ variable "cluster_instance_type" {
 
 variable "cluster_minimum_size" {
   description = "The minimum size of the ECS cluster"
-  default     = 1
+  default     = 3
 }
 
 variable "cluster_maximum_size" {
   description = "The maximum size of the ECS cluster"
   default     = 10
-}
-
-variable "cluster_desired_capacity" {
-  description = "The desired capacity of the ECS cluster"
-  default     = 3
 }
 
 variable "jenkins_relay_user_data_template" {
