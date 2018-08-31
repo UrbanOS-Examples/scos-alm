@@ -30,7 +30,10 @@
                 "s3:GetObject",
                 "s3:DeleteObject"
             ],
-            "Resource": "arn:aws:s3:::scos-alm-terraform-state/*"
+            "Resource": [
+                "arn:aws:s3:::scos-alm-terraform-state/*",
+                "arn:aws:s3:::scospy-repository/*"
+            ]
         },
         {
             "Effect": "Allow",
