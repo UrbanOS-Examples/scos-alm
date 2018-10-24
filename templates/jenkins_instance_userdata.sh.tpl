@@ -2,6 +2,8 @@
 
 export log=/var/log/user_data.sh.log
 export docker_data_dir=${mount_point}/${directory_name}
+export worker_data_dir=${mount_point}/worker
+export worker_user_id=10000
 
 echo "About to run yum update" >> $log
 yum -y update
@@ -45,6 +47,16 @@ if [ $mount_successful -eq 0 ] ; then
   echo "Since the EFS mount was successful, need to change the permissions on $docker_data_dir directory." >> $log
   mkdir -p $docker_data_dir
   chmod 777 $docker_data_dir
+
+  if [[ ! -d ${worker_data_dir} ]]; then
+    (
+    set -e
+    echo "Since the EFS mount was successful, need to ensure the ${worker_data_dir} directory exists" >> $log
+    rm -rf ${worker_data_dir}
+    mkdir -p ${worker_data_dir}
+    chown -R ${worker_user_id}:${worker_user_id} ${worker_data_dir}
+    )
+  fi
 fi
 
 echo "Stopping ECS daemon" >> $log
