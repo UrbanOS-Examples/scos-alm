@@ -48,13 +48,13 @@ if [ $mount_successful -eq 0 ] ; then
   mkdir -p $docker_data_dir
   chmod 777 $docker_data_dir
 
-  if [[ ! -d ${worker_data_dir} ]]; then
+  if [[ ! -d $worker_data_dir ]]; then
     (
     set -e
-    echo "Since the EFS mount was successful, need to ensure the ${worker_data_dir} directory exists" >> $log
-    rm -rf ${worker_data_dir}
-    mkdir -p ${worker_data_dir}
-    chown -R ${worker_user_id}:${worker_user_id} ${worker_data_dir}
+    echo "Since the EFS mount was successful, need to ensure the $worker_data_dir directory exists" >> $log
+    rm -rf $worker_data_dir
+    mkdir -p $worker_data_dir
+    chown -R $worker_user_id:$worker_user_id $worker_data_dir
     )
   fi
 fi
