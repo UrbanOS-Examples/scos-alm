@@ -5,7 +5,10 @@
     "memory": ${memory},
     "essential": true,
     "command": ${command},
-    "environment" : [{ "name" : "ELB_NAME", "value" : "${elb_name}" }],
+    "environment" : [
+        { "name" : "ELB_NAME", "value" : "${elb_name}" },
+        { "name" : "LDAP_BINDUSER_PWD", "value" : "${ldap_binduser_pwd}" }
+    ],
     "portMappings": [
       {
         "containerPort": ${jenkins_port},
