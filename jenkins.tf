@@ -190,7 +190,7 @@ locals {
     },
   ]
   service_name    = "jenkins_master"
-  service_image   = "scos/jenkins-master:eaa8826cbd39bed545e0a168a12e14bfc304acc8"
+  service_image   = "scos/jenkins-master:c1316744b7b4da79912d31b251738890be894dfd"
   service_command = []
   directory_name  = "jenkins_home"
 }
