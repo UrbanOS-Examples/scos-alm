@@ -3,7 +3,7 @@ data "template_file" "jenkins_relay_user_data" {
 
   vars {
     jenkins_host = "jenkins.${terraform.workspace}.${var.root_dns_zone}"
-    jenkins_port = 80
+    jenkins_port = 443
     dns_name     = "ci-webhook.${terraform.workspace}.${var.root_dns_zone}"
   }
 }
