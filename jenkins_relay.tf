@@ -74,3 +74,8 @@ resource "aws_instance" "jenkins_relay" {
     ignore_changes = ["key_name"]
   }
 }
+
+variable "jenkins_relay_user_data_template" {
+  description = "Location of the userdata template for the jenkins relay"
+  default     = "templates/jenkins_relay_userdata.sh.tpl"
+}

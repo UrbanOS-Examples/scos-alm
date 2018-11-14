@@ -239,13 +239,3 @@ variable "cluster_maximum_size" {
   description = "The maximum size of the ECS cluster"
   default     = 10
 }
-
-variable "jenkins_relay_user_data_template" {
-  description = "Location of the userdata template for the jenkins relay"
-  default     = "templates/jenkins_relay_userdata.sh.tpl"
-}
-
-variable "jenkins_relay_docker_image" {
-  description = "Docker image for the jenkins relay"
-  default     = "scos/jenkins-relay:latest"
-}
