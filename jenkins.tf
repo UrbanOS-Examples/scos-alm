@@ -149,8 +149,24 @@ resource "aws_security_group" "load_balancer" {
   vpc_id = "${module.vpc.vpc_id}"
   description = "ELB for component: ${local.component}, service: ${terraform.workspace}_${local.service_name}, deployment: ${terraform.workspace}"
 
-  # had to change this from 443. This is coupled with ELB listeners
-  ingress = ["${local.ingress_rules}"]
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["${var.allowed_cidrs}"]
+  }
+  ingress {
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
+    cidr_blocks = ["${var.allowed_cidrs}"]
+  }
+  ingress {
+    from_port = "${local.jnlp_port}"
+    to_port = "${local.jnlp_port}"
+    protocol = "tcp"
+    cidr_blocks = ["${var.allowed_cidrs}"]
+  }
 
   egress {
     from_port = 1
@@ -201,21 +217,6 @@ locals {
   component       = "delivery-pipeline"
   jenkins_port    = 8080
   jnlp_port       = 50000
-
-  ingress_rules = [
-    {
-      from_port = 80
-      to_port = 80
-      protocol = "tcp"
-      cidr_blocks = ["${var.allowed_cidrs}"]
-    },
-    {
-      from_port = "${local.jnlp_port}"
-      to_port = "${local.jnlp_port}"
-      protocol = "tcp"
-      cidr_blocks = ["${var.allowed_cidrs}"]
-    },
-  ]
   service_name    = "jenkins_master"
   service_image   = "scos/jenkins-master:c1316744b7b4da79912d31b251738890be894dfd"
   service_command = []
