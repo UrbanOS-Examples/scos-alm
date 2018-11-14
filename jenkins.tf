@@ -40,7 +40,7 @@ data "template_file" "task_definition" {
     jnlp_port      = "${local.jnlp_port}"
     region         = "${var.region}"
     log_group      = "${module.jenkins_service.log_group}"
-    elb_name       = "${module.jenkins_ecs_load_balancer.name}"
+    elb_name       = "${aws_elb.service.name}"
     directory_name = "${local.directory_name}"
     ldap_binduser_pwd = "${module.iam_stack.bind_user_password}"
   }
@@ -87,37 +87,77 @@ resource "aws_route53_record" "jenkins" {
   name    = "jenkins"
   type    = "CNAME"
   ttl     = "300"
-  records = ["${module.jenkins_ecs_load_balancer.dns_name}"]
+  records = ["${aws_elb.service.dns_name}"]
 
   lifecycle {
     ignore_changes = ["name", "allow_overwrite"]
   }
 }
 
-module "jenkins_ecs_load_balancer" {
-  source = "../modules/elb"
+resource "aws_elb" "service" {
+  subnets = ["${module.vpc.private_subnets}"]
+  security_groups = [
+    "${aws_security_group.load_balancer.id}"
+  ]
 
-  region     = "${var.region}"
-  vpc_id     = "${module.vpc.vpc_id}"
-  subnet_ids = "${module.vpc.private_subnets}"
+  internal = "true"
+  name = "elb-${local.component}-${terraform.workspace}"
 
-  component             = "${local.component}"
-  deployment_identifier = "${terraform.workspace}"
+  cross_zone_load_balancing = true
+  idle_timeout = 180
+  connection_draining = true
+  connection_draining_timeout = 60
 
-  service_name            = "${terraform.workspace}_${local.service_name}"
-  service_port            = "${local.jenkins_port}"
-  listener_ports          = "${local.listener_ports}"
-  ingress_rules           = "${local.ingress_rules}"
-  service_certificate_arn = ""
+  listener {
+    instance_port     = "${local.jenkins_port}"
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+  listener {
+    instance_port      = "${local.jenkins_port}"
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = "${module.tls_certificate.arn}"
+  }
+  listener {
+    instance_port     = "${local.jnlp_port}"
+    instance_protocol = "tcp"
+    lb_port           = "${local.jnlp_port}"
+    lb_protocol       = "tcp"
+  }
 
-  health_check_target = "HTTP:8080/login"
+  health_check {
+    healthy_threshold = 3
+    unhealthy_threshold = 3
+    timeout = 15
+    target = "HTTP:8080/login"
+    interval = 120
+  }
 
-  allow_cidrs = "${var.allowed_cidrs}"
+  tags {
+    Name = "elb-${local.component}-${terraform.workspace}"
+    Component = "${local.component}"
+    DeploymentIdentifier = "${terraform.workspace}"
+    Service = "${terraform.workspace}_${local.service_name}"
+  }
+}
 
-  include_public_dns_record  = "no"
-  include_private_dns_record = "no"
+resource "aws_security_group" "load_balancer" {
+  name = "elb-${local.component}-${terraform.workspace}"
+  vpc_id = "${module.vpc.vpc_id}"
+  description = "ELB for component: ${local.component}, service: ${terraform.workspace}_${local.service_name}, deployment: ${terraform.workspace}"
 
-  expose_to_public_internet = "no"
+  # had to change this from 443. This is coupled with ELB listeners
+  ingress = ["${local.ingress_rules}"]
+
+  egress {
+    from_port = 1
+    to_port   = 65535
+    protocol  = "tcp"
+    cidr_blocks = ["${module.vpc.vpc_cidr_block}"]
+  }
 }
 
 module "jenkins_service" {
@@ -140,7 +180,7 @@ module "jenkins_service" {
   service_deployment_minimum_healthy_percent = "50"
 
   attach_to_load_balancer = "yes"
-  service_elb_name        = "${module.jenkins_ecs_load_balancer.name}"
+  service_elb_name        = "${aws_elb.service.name}"
 
   service_volumes = [
     {
@@ -161,20 +201,7 @@ locals {
   component       = "delivery-pipeline"
   jenkins_port    = 8080
   jnlp_port       = 50000
-  listener_ports  = [
-    {
-      instance_port     = "${local.jenkins_port}"
-      instance_protocol = "http"
-      lb_port           = 80
-      lb_protocol       = "http"
-    },
-    {
-      instance_port     = "${local.jnlp_port}"
-      instance_protocol = "tcp"
-      lb_port           = "${local.jnlp_port}"
-      lb_protocol       = "tcp"
-    },
-  ]
+
   ingress_rules = [
     {
       from_port = 80
