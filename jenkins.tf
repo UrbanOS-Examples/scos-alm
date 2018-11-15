@@ -59,6 +59,91 @@ module "jenkins_mount_targets" {
   }
 }
 
+resource "aws_lb_target_group" "jenkins_relay" {
+  name     = "${terraform.workspace}-jenkins-relay"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = "${module.vpc.vpc_id}"
+  health_check {
+    path = "/login"
+    matcher = "200"
+  }
+}
+
+resource "aws_route53_record" "jenkins_relay" {
+  zone_id = "${aws_route53_zone.public_hosted_zone.zone_id}"
+  name    = "ci-webhook"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_lb.jenkins_relay.dns_name}"
+    zone_id                = "${aws_lb.jenkins_relay.zone_id}"
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_lb" "jenkins_relay" {
+  name     = "${terraform.workspace}-jenkins-relay"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [
+    "${aws_security_group.load_balancer.id}",
+    "${aws_security_group.jenkins_relay.id}"
+  ]
+  subnets = ["${module.vpc.public_subnets}"]
+}
+
+resource "aws_security_group" "jenkins_relay" {
+  name   = "${terraform.workspace}-jenkins-relay"
+  vpc_id   = "${module.vpc.vpc_id}"
+
+  ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_lb_listener" "jenkins_relay" {
+  load_balancer_arn = "${aws_lb.jenkins_relay.arn}"
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2015-05"
+  certificate_arn   = "${module.tls_certificate.arn}"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Forbidden"
+      status_code  = "403"
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "jenkins_relay" {
+  listener_arn = "${aws_lb_listener.jenkins_relay.arn}"
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.jenkins_relay.arn}"
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["/github-webhook/"]
+  }
+}
+
 module "jenkins_cluster" {
   source = "github.com/SmartColumbusOS/terraform-aws-ecs-cluster-1"
   # source  = "infrablocks/ecs-cluster/aws"
@@ -76,6 +161,9 @@ module "jenkins_cluster" {
   cluster_instance_type                = "${var.cluster_instance_type}"
   cluster_instance_user_data_template  = "${data.template_file.instance_user_data.rendered}"
   cluster_instance_iam_policy_contents = "${file("files/instance_policy.json")}"
+  cluster_target_group_arns            = [
+    "${aws_lb_target_group.jenkins_relay.arn}"
+  ]
 
   cluster_minimum_size     = "${var.cluster_minimum_size}"
   cluster_maximum_size     = "${var.cluster_maximum_size}"

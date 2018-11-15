@@ -29,3 +29,9 @@ key_pair_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDRAvH6k7iEeRDz9SQtk
 freeipa_replica_count = 0
 
 kerberos_realm_name = "sandbox.internal.smartcolumbusos.com"
+
+vpc_private_subnets = ["10.0.0.0/19", "10.0.64.0/19"]
+
+vpc_public_subnets = ["10.0.32.0/20", "10.0.96.0/20"]
+
+vpc_azs = ["us-east-2a", "us-east-2b"]
