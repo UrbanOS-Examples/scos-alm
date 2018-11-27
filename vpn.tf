@@ -8,6 +8,7 @@ module "vpn" {
   admin_password    = "${data.aws_secretsmanager_secret_version.openvpn_admin_password.secret_string}"
   key_name          = "${aws_key_pair.cloud_key.key_name}"
   sandbox           = "${var.sandbox}"
+  ami_id            = "${var.vpn_ami_id}"
 }
 
 resource "aws_route53_record" "vpn" {
@@ -25,6 +26,10 @@ resource "aws_route53_record" "vpn" {
 variable "openvpn_admin_username" {
   description = "Username for the OpenVPN Access Server administrative user"
   default     = "openvpn"
+}
+
+variable "vpn_ami_id" {
+  description = "AMI ID for deploying the VPN instance"
 }
 
 output "vpn_public_ip" {
