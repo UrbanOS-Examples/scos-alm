@@ -40,3 +40,7 @@ output "keycloak_server_ip" {
 output "bind_user_password_secret_id" {
   value = "${module.iam_stack.bind_user_password_secret_id}"
 }
+
+output "reverse_dns_zone_id" {
+  value = "${module.iam_stack.reverse_dns_zone_id}"
+}
