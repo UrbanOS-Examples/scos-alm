@@ -34,7 +34,8 @@
                 "arn:aws:s3:::scos-alm-terraform-state/*",
                 "arn:aws:s3:::scospy-repository/*",
                 "arn:aws:s3:::scos-helm-repository/*",
-                "arn:aws:s3:::os-build-artifacts-repository/*"
+                "arn:aws:s3:::os-build-artifacts-repository/*",
+                "arn:aws:s3:::scos-alm-jenkins-backups/*"
             ]
         },
         {
