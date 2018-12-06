@@ -42,7 +42,7 @@ data "template_file" "task_definition" {
     log_group      = "${module.jenkins_service.log_group}"
     elb_name       = "${aws_elb.service.name}"
     directory_name = "${local.directory_name}"
-    ldap_binduser_pwd = "${module.iam_stack.bind_user_password}"
+    ldap_binduser_pwd = "${random_string.bind_user_password.result}"
   }
 }
 

@@ -12,6 +12,73 @@ module "iam_stack" {
   vpc_cidr                = "${var.vpc_cidr}"
   freeipa_replica_count   = "${var.freeipa_replica_count}"
   recovery_window_in_days = "${var.recovery_window_in_days}"
+
+  extra_users_count       = 3
+  extra_users             = [
+    {
+      name       = "binduser"
+      password   = "${random_string.bind_user_password.result}"
+      first_name = "bind"
+      last_name  = "user"
+    },
+    {
+      name       = "sa-nifi"
+      password   = "${random_string.nifi_user_password.result}"
+      first_name = "sa"
+      last_name  = "nifi"
+    },
+    {
+      name       = "sa-discovery-api"
+      password   = "${random_string.discovery_api_user_password.result}"
+      first_name = "sa"
+      last_name  = "discovery-api"
+    }
+  ]
+}
+
+resource "random_string" "bind_user_password" {
+  length  = 40
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "bind_user_password" {
+  name = "${terraform.workspace}-bind-user-password"
+  recovery_window_in_days = "${var.recovery_window_in_days}"
+}
+
+resource "aws_secretsmanager_secret_version" "bind_user_password" {
+  secret_id     = "${aws_secretsmanager_secret.bind_user_password.id}"
+  secret_string = "${random_string.bind_user_password.result}"
+}
+
+resource "random_string" "nifi_user_password" {
+  length  = 40
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "nifi_user_password" {
+  name = "${terraform.workspace}-nifi-user-password"
+  recovery_window_in_days = "${var.recovery_window_in_days}"
+}
+
+resource "aws_secretsmanager_secret_version" "nifi_user_password" {
+  secret_id     = "${aws_secretsmanager_secret.nifi_user_password.id}"
+  secret_string = "${random_string.nifi_user_password.result}"
+}
+
+resource "random_string" "discovery_api_user_password" {
+  length  = 40
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "discovery_api_user_password" {
+  name = "${terraform.workspace}-discovery-api-user-password"
+  recovery_window_in_days = "${var.recovery_window_in_days}"
+}
+
+resource "aws_secretsmanager_secret_version" "discovery_api_user_password" {
+  secret_id     = "${aws_secretsmanager_secret.discovery_api_user_password.id}"
+  secret_string = "${random_string.discovery_api_user_password.result}"
 }
 
 variable "kerberos_realm_name" {
@@ -38,7 +105,18 @@ output "keycloak_server_ip" {
 }
 
 output "bind_user_password_secret_id" {
-  value = "${module.iam_stack.bind_user_password_secret_id}"
+  description = "The SecretsManager ID for the bind user password"
+  value       = "${aws_secretsmanager_secret_version.bind_user_password.arn}"
+}
+
+output "nifi_user_password_secret_id" {
+  description = "The SecretsManager ID for the nifi user password"
+  value       = "${aws_secretsmanager_secret_version.nifi_user_password.arn}"
+}
+
+output "discovery_api_user_password_secret_id" {
+  description = "The SecretsManager ID for the discovery-api user password"
+  value       = "${aws_secretsmanager_secret_version.discovery_api_user_password.arn}"
 }
 
 output "reverse_dns_zone_id" {
