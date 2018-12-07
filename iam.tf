@@ -16,19 +16,19 @@ module "iam_stack" {
   extra_users_count       = 3
   extra_users             = [
     {
-      name       = "binduser"
+      username   = "binduser"
       password   = "${random_string.bind_user_password.result}"
       first_name = "bind"
       last_name  = "user"
     },
     {
-      name       = "sa-nifi"
+      username   = "sa-nifi"
       password   = "${random_string.nifi_user_password.result}"
       first_name = "sa"
       last_name  = "nifi"
     },
     {
-      name       = "sa-discovery-api"
+      username   = "sa-discovery-api"
       password   = "${random_string.discovery_api_user_password.result}"
       first_name = "sa"
       last_name  = "discovery-api"
