@@ -20,18 +20,21 @@ module "iam_stack" {
       password   = "${random_string.bind_user_password.result}"
       first_name = "bind"
       last_name  = "user"
+      groups     = ""
     },
     {
       username   = "sa-nifi"
       password   = "${random_string.nifi_user_password.result}"
       first_name = "sa"
       last_name  = "nifi"
+      groups     = "user,admin"
     },
     {
       username   = "sa-discovery-api"
       password   = "${random_string.discovery_api_user_password.result}"
       first_name = "sa"
       last_name  = "discovery-api"
+      groups     = "user,admin"
     }
   ]
 }
