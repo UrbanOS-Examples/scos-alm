@@ -23,3 +23,15 @@ so updates to the ALM must be manually applied.
 terraform init --backend-config=../backends/alm.conf
 terraform apply -var-file=variables/alm.tfvars
 ```
+
+### Recreating the Jenkins Task
+
+The Jenkins docker container uses a non-terminating task, this task will not automatically be updated to use the new image.
+This can be solved by forcing a deployment
+
+```bash
+aws ecs update-service --cluster delivery-pipeline-alm-alm_jenkins_cluster --service jenkins_master --region us-east-2 --force-new-deployment
+```
+
+To verify, check the tasks tab for the ECS cluster
+https://us-east-2.console.aws.amazon.com/ecs/home?region=us-east-2#/clusters/delivery-pipeline-alm-alm_jenkins_cluster/tasks
