@@ -1,0 +1,106 @@
+{{- $name := .Values.calico.name -}}
+{{- if .Values.calico.enabled -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+{{- if .Values.calico.node.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.calico.node.deploymentAnnotations | indent 4 }}
+{{- end }}
+  name: {{ $name }}-node
+  labels:
+    component: {{ $name }}-node
+{{ include "bootstrap.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      component: {{ $name }}-node
+  {{- if .Values.calico.node.updateStrategy }}
+  updateStrategy:
+{{ toYaml .Values.calico.node.updateStrategy | trim | indent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- if .Values.calico.node.podAnnotations }}
+      annotations:
+{{ toYaml .Values.calico.node.podAnnotations | trim | indent 8 }}
+      {{- end }}
+      labels:
+        component: {{ $name }}-node
+    spec:
+      hostNetwork: true
+      serviceAccountName: {{ $name }}-node
+      terminationGracePeriodSeconds: {{ .Values.calico.node.terminationGrace }}
+      containers:
+        - name: {{ $name }}-node
+          resources:
+{{ include "bootstrap.resources" . | trim | indent 12 }}
+          image: {{ .Values.calico.node.image.repository }}:{{ .Values.calico.node.image.tag }}
+          imagePullPolicy: "{{ .Values.calico.node.image.pullPolicy }}"
+          env:
+            - name: DATASTORE_TYPE
+              value: "kubernetes"
+            - name: FELIX_INTERFACEPREFIX
+              value: "eni"
+            - name: FELIX_LOGSEVERITYSCREEN
+              value: "info"
+            - name: CALICO_NETWORKING_BACKEND
+              value: "none"
+            - name: CLUSTER_TYPE
+              value: "k8s,ecs"
+            - name: CALICO_DISABLE_FILE_LOGGING
+              value: "true"
+            - name: FELIX_TYPHAK8SSERVICENAME
+              value: "{{ $name }}-typha"
+            - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+              value: "ACCEPT"
+            - name: FELIX_IPV6SUPPORT
+              value: "false"
+            - name: WAIT_FOR_DATASTORE
+              value: "true"
+            - name: FELIX_LOGSEVERITYSYS
+              value: "none"
+            - name: FELIX_PROMETHEUSMETRICSENABLED
+              value: "true"
+            - name: NO_DEFAULT_POOLS
+              value: "true"
+            - name: NODENAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: IP
+              value: ""
+            - name: FELIX_HEALTHENABLED
+              value: "true"
+          securityContext:
+            privileged: true
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 9099
+              host: localhost
+            periodSeconds: 10
+            initialDelaySeconds: 10
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 9099
+            periodSeconds: 10
+          volumeMounts:
+            - mountPath: /lib/modules
+              name: lib-modules
+              readOnly: true
+            - mountPath: /var/run/calico
+              name: var-run-calico
+              readOnly: false
+      volumes:
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: var-run-calico
+          hostPath:
+            path: /var/run/calico
+      tolerations:
+      - operator: Exists
+{{- end -}}

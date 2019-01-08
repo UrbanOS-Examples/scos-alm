@@ -1,0 +1,75 @@
+{{- if .Values.externalDns.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+{{- if .Values.externalDns.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.externalDns.deploymentAnnotations | trim | indent 4 }}
+{{- end }}
+  labels:
+{{ include "bootstrap.labels" . | indent 4 }}
+  name: {{ .Values.externalDns.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      component: "{{ .Values.externalDns.name }}"
+      release: {{ .Release.Name }}
+{{- if .Values.externalDns.pod.labels }}
+{{ toYaml .Values.externalDns.pod.labels | trim | indent 6 }}
+{{- end }}
+  replicas: {{ .Values.externalDns.replicaCount }}
+  {{- if .Values.externalDns.strategy }}
+  strategy:
+{{ toYaml .Values.externalDns.strategy | trim | indent 4 }}
+  {{- end }}
+  template:
+    metadata:
+    {{- if .Values.externalDns.podAnnotations }}
+      annotations:
+{{ toYaml .Values.externalDns.podAnnotations | trim | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ .Chart.Name }}
+        component: "{{ .Values.externalDns.name }}"
+        release: {{ .Release.Name }}
+{{- if .Values.externalDns.pod.labels }}
+{{ toYaml .Values.externalDns.pod.labels | trim | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ .Values.externalDns.name }}
+{{- if .Values.externalDns.priorityClassName }}
+      priorityClassName: "{{ .Values.externalDns.priorityClassName }}"
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-{{ .Values.externalDns.name }}
+          resources:
+{{ include "bootstrap.resources" . | trim | indent 12 }}
+          image: "{{ .Values.externalDns.image.repository }}:{{ .Values.externalDns.image.tag }}"
+          imagePullPolicy: "{{ .Values.externalDns.image.pullPolicy }}"
+        {{- if .Values.externalDns.args }}
+          args:
+          {{- range $key, $value := .Values.externalDns.args }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+{{- if .Values.externalDns.extraArgs }}
+{{ toYaml .Values.externalDns.extraArgs | trim | indent 12 }}
+{{- end }}
+        {{- end }}
+    {{- if .Values.externalDns.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.externalDns.nodeSelector | trim | indent 8 }}
+    {{- end }}
+    {{- if .Values.externalDns.securityContext }}
+      securityContext:
+{{ toYaml .Values.externalDns.securityContext | trim | indent 8 }}
+    {{- end }}
+    {{- if .Values.externalDns.tolerations }}
+      tolerations:
+{{ toYaml .Values.externalDns.tolerations | trim | indent 8 }}
+    {{- end }}
+    {{- if .Values.externalDns.affinity }}
+      affinity:
+{{ toYaml .Values.externalDns.affinity | trim | indent 8 }}
+    {{- end }}
+{{- end }}

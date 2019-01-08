@@ -1,0 +1,17 @@
+{{- $name := .Values.calico.name -}}
+{{- if .Values.calico.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+{{ include "bootstrap.labels" . | indent 4 }}
+  name: {{ $name }}-node
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $name }}-node
+subjects:
+- kind: ServiceAccount
+  name: {{ $name }}-node
+  namespace: {{ .Release.Namespace }}
+{{- end }}

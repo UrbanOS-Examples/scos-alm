@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-properties
+data:
+  aws.props: |-
+    PUBLIC_SUBNETS={{ join "\\\\," .Values.aws.publicSubnets }}
+    ALLOW_WEB_TRAFFIC_SG={{ .Values.aws.allowWebTrafficSecurityGroup }}
+    CERTIFICATE_ARN={{ .Values.aws.certificateArn }}

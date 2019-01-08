@@ -1,0 +1,86 @@
+{{- $name := .Values.calico.name -}}
+{{- if .Values.calico.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+{{- if .Values.calico.typha.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.calico.typha.deploymentAnnotations | indent 4 }}
+{{- end }}
+  name: {{ $name }}-typha
+  labels:
+    component: {{ $name }}-typha
+{{ include "bootstrap.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      component: {{ $name }}-typha
+  {{- if .Values.calico.typha.updateStrategy }}
+  updateStrategy:
+{{ toYaml .Values.calico.typha.updateStrategy | trim | indent 4 }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.calico.typha.revisionLimit }}
+  template:
+    metadata:
+      {{- if .Values.calico.typha.podAnnotations }}
+      annotations:
+{{ toYaml .Values.calico.typha.podAnnotations | trim | indent 8 }}
+      {{- end }}
+      labels:
+        component: {{ $name }}-typha
+    spec:
+      hostNetwork: true
+      serviceAccountName: {{ $name }}-node
+      containers:
+      - name: {{ $name }}-typha
+        resources:
+{{ include "bootstrap.resources" . | trim | indent 10 }}
+        image: {{ .Values.calico.typha.image.repository }}:{{ .Values.calico.typha.image.tag }}
+        imagePullPolicy: "{{ .Values.calico.typha.image.pullPolicy }}"
+        ports:
+        - containerPort: {{ .Values.calico.typha.port }}
+          name: {{ $name }}-typha
+          protocol: TCP
+        env:
+          - name: FELIX_INTERFACEPREFIX
+            value: "eni"
+          - name: TYPHA_LOGFILEPATH
+            value: "none"
+          - name: TYPHA_LOGSEVERITYSYS
+            value: "none"
+          - name: TYPHA_LOGSEVERITYSCREEN
+            value: "info"
+          - name: TYPHA_PROMETHEUSMETRICSENABLED
+            value: "true"
+          - name: TYPHA_CONNECTIONREBALANCINGMODE
+            value: "kubernetes"
+          - name: TYPHA_PROMETHEUSMETRICSPORT
+            value: "9093"
+          - name: TYPHA_DATASTORETYPE
+            value: "kubernetes"
+          - name: TYPHA_MAXCONNECTIONSLOWERLIMIT
+            value: "1"
+          - name: TYPHA_HEALTHENABLED
+            value: "true"
+        volumeMounts:
+        - mountPath: /etc/calico
+          name: etc-calico
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: 9098
+          periodSeconds: 30
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 9098
+          periodSeconds: 10
+      volumes:
+      - name: etc-calico
+        hostPath:
+          path: /etc/calico
+      tolerations:
+      - operator: Exists
+{{- end -}}

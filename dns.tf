@@ -1,9 +1,13 @@
+locals {
+  internal_public_hosted_zone_name = "${lower(terraform.workspace)}.${lower(var.root_dns_zone)}"
+}
+
 data "aws_route53_zone" "root_zone" {
   name = "${var.root_dns_zone}"
 }
 
 resource "aws_route53_zone" "public_hosted_zone" {
-  name          = "${terraform.workspace}.${var.root_dns_zone}"
+  name          = "${local.internal_public_hosted_zone_name}"
   force_destroy = true
 
   tags = {

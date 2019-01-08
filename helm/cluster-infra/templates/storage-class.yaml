@@ -1,0 +1,25 @@
+{{- if .Values.storageClass.enabled -}}
+{{- range .Values.storageClass.classes }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+{{- if .annotations }}
+  annotations:
+{{ toYaml .annotations | trim | indent 4 }}
+{{- end }}
+  labels:
+{{ include "bootstrap.labels" $ | indent 4 }}
+  name: {{ .name }}
+provisioner: {{ .provisioner }}
+parameters:
+  type: {{ .type }}
+reclaimPolicy: {{ .reclaimPolicy }}
+{{- if .mountOptions }}
+mountOptions:
+{{- range .mountOptions }}
+- {{ . }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end -}}

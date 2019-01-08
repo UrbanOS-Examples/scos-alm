@@ -1,0 +1,92 @@
+{{- if .Values.externalDns.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+{{- if .Values.albIngress.deploymentAnnotations }}
+  annotations:
+{{ toYaml .Values.albIngress.deploymentAnnotations | trim | indent 4 }}
+{{- end }}
+  labels:
+{{ include "bootstrap.labels" . | indent 4 }}
+  name: {{ .Values.albIngress.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      component: "{{ .Values.albIngress.name }}"
+      release: {{ .Release.Name }}
+{{- if .Values.albIngress.pod.labels }}
+{{ toYaml .Values.albIngress.pod.labels | trim | indent 6 }}
+{{- end }}
+  replicas: {{ .Values.externalDns.replicaCount }}
+  {{- if .Values.externalDns.strategy }}
+  strategy:
+{{ toYaml .Values.externalDns.strategy | trim | indent 4 }}
+  {{- end }}
+  template:
+    metadata:
+    {{- if .Values.externalDns.podAnnotations }}
+      annotations:
+{{ toYaml .Values.externalDns.podAnnotations | trim | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ .Chart.Name }}
+        component: "{{ .Values.albIngress.name }}"
+        release: {{ .Release.Name }}
+{{- if .Values.albIngress.pod.labels }}
+{{ toYaml .Values.albIngress.pod.labels | trim | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ .Values.albIngress.name }}
+{{- if .Values.albIngress.priorityClassName }}
+      priorityClassName: "{{ .Values.albIngress.priorityClassName }}"
+{{- end }}
+      containers:
+      - name: {{ .Chart.Name }}-{{ .Values.albIngress.name }}
+        image: "{{ .Values.albIngress.image.repository }}:{{ .Values.albIngress.image.tag }}"
+        imagePullPolicy: "{{ .Values.albIngress.image.pullPolicy }}"
+      {{- if .Values.albIngress.args }}
+        args:
+          - /server
+        {{- range $key, $value := .Values.albIngress.args }}
+          - --{{ $key }}={{ $value }}
+        {{- end }}
+      {{- end }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        {{- range $key, $value := .Values.albIngress.extraEnv }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        resources:
+{{ include "bootstrap.resources" . | trim | indent 10 }}
+        terminationMessagePath: /dev/termination-log
+      {{- if .Values.albIngress.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.albIngress.nodeSelector | trim | indent 8 }}
+      {{- end }}
+      {{- if .Values.albIngress.securityContext }}
+      securityContext:
+{{ toYaml .Values.albIngress.securityContext | trim | indent 8 }}
+      {{- end }}
+      {{- if .Values.albIngress.tolerations }}
+      tolerations:
+{{ toYaml .Values.albIngress.tolerations | trim | indent 8 }}
+      {{- end }}
+      {{- if .Values.albIngress.affinity }}
+      affinity:
+{{ toYaml .Values.albIngress.affinity | trim | indent 8 }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+{{- end }}
