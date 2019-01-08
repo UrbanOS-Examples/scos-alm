@@ -1,4 +1,0 @@
-aws:
-  publicSubnets: ["subnet-00d2614b48cea2be3","subnet-0719336f1a777d18d"]
-  allowWebTrafficSecurityGroup: sg-028dfdb58f2788a17
-  certificateArn: "arn:aws:acm:us-east-2:068920858268:certificate/cd578639-6079-4214-88c9-db3fdc3946e8"

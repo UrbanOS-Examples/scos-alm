@@ -5,7 +5,7 @@ module "eks-cluster" {
 
   cluster_name    = "streaming-kube-${terraform.workspace}"
   cluster_version = "${var.cluster_version}"
-  subnets         = "${slice(module.vpc.private_subnets,0,2)}"
+  subnets         = "${module.vpc.public_subnets}"
   vpc_id          = "${module.vpc.vpc_id}"
 
   kubeconfig_aws_authenticator_command         = "heptio-authenticator-aws"
