@@ -1,5 +1,5 @@
 module "eks" {
-    source = "git@github.com:SmartColumbusOS/scos-tf-eks?ref=smrt-817"
+    source = "git@github.com:SmartColumbusOS/scos-tf-eks"
 
     public_subnets = "${module.vpc.public_subnets}"
     vpc_id = "${module.vpc.vpc_id}"
