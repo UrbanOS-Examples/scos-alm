@@ -1,5 +1,5 @@
 module "iam_stack" {
-  source                  = "../modules/iam"
+  source                  = "git@github.com:SmartColumbusOS/scos-tf-iam"
   vpc_id                  = "${module.vpc.vpc_id}"
   subnet_ids              = ["${module.vpc.private_subnets}"]
   ssh_key                 = "${aws_key_pair.cloud_key.key_name}"
