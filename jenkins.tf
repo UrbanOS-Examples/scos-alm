@@ -47,7 +47,7 @@ data "template_file" "task_definition" {
 }
 
 module "jenkins_mount_targets" {
-  source  = "git@github.com:SmartColumbusOS/scos-tf-efs-mount-target"
+  source  = "git@github.com:SmartColumbusOS/scos-tf-efs-mount-target?ref=1.0.0"
   sg_name = "jenkins-data"
   vpc_id  = "${module.vpc.vpc_id}"
   subnet  = "${module.vpc.private_subnets[0]}"
