@@ -32,7 +32,7 @@ node('infrastructure') { ansiColor('xterm') { sshagent(["k8s-no-pass", "GitHub"]
     }
 
     def terraform = scos.terraform('alm')
-       
+
     stage("Plan ALM") {
         terraform.init()
 
