@@ -37,7 +37,6 @@ node('infrastructure') { ansiColor('xterm') { sshagent(["k8s-no-pass", "GitHub"]
         terraform.init()
 
         def overrides = [:]
-        overrides << terraformOverrides
         overrides << [ 'key_pair_public_key': publicKey ]
 
         terraform.plan(terraform.defaultVarFile, overrides)
