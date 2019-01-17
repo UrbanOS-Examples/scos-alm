@@ -5,7 +5,7 @@ including VPC, network, Jenkins master and workers, and a VPN to grant developer
 
 ## Creating
 
-*** This project relies on [a state bucket](../bootstrap/README.md) and [alm-durable](../alm-durable/README.md) pre-existing. ***
+*** This project relies on [a state bucket](https://github.com/SmartColumbusOS/scos-bootstrap) and [alm-durable](https://github.com/SmartColumbusOS/scos-alm-durable) pre-existing. ***
 
 ### Sandbox
 
