@@ -1,5 +1,5 @@
 module "iam_stack" {
-  source                  = "git@github.com:SmartColumbusOS/scos-tf-iam?ref=1.0.0"
+  source                  = "git@github.com:SmartColumbusOS/scos-tf-iam?ref=1.1.0"
   vpc_id                  = "${module.vpc.vpc_id}"
   subnet_ids              = ["${module.vpc.private_subnets}"]
   ssh_key                 = "${aws_key_pair.cloud_key.key_name}"
@@ -12,6 +12,7 @@ module "iam_stack" {
   vpc_cidr                = "${var.vpc_cidr}"
   freeipa_replica_count   = "${var.freeipa_replica_count}"
   recovery_window_in_days = "${var.recovery_window_in_days}"
+  alb_certificate         = "${module.tls_certificate.arn}"
 
   extra_users_count       = 3
   extra_users             = [
@@ -124,4 +125,14 @@ output "discovery_api_user_password_secret_id" {
 
 output "reverse_dns_zone_id" {
   value = "${module.iam_stack.reverse_dns_zone_id}"
+}
+
+output "freeipa_master_instance_id" {
+  description = "The instance id the iam-master ec2 instance"
+  value = "${module.iam_stack.freeipa_master_instance_id}"
+}
+
+output "freeipa_replica_instance_ids" {
+  description = "The instance id the iam-master ec2 instance"
+  value = ["${module.iam_stack.freeipa_replica_instance_ids}"]
 }
