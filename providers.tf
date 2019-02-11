@@ -23,7 +23,7 @@ provider "template" {
 }
 
 provider "aws" {
-  version = "1.39"
+  version = "1.57"
   region  = "${var.region}"
 
   assume_role {
