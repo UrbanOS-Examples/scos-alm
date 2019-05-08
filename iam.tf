@@ -14,7 +14,7 @@ module "iam_stack" {
   recovery_window_in_days = "${var.recovery_window_in_days}"
   alb_certificate         = "${module.tls_certificate.arn}"
 
-  extra_users_count       = 3
+  extra_users_count       = 2
   extra_users             = [
     {
       username   = "binduser"
