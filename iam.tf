@@ -24,13 +24,6 @@ module "iam_stack" {
       groups     = ""
     },
     {
-      username   = "sa-nifi"
-      password   = "${random_string.nifi_user_password.result}"
-      first_name = "sa"
-      last_name  = "nifi"
-      groups     = "user,admin"
-    },
-    {
       username   = "sa-discovery-api"
       password   = "${random_string.discovery_api_user_password.result}"
       first_name = "sa"
@@ -53,21 +46,6 @@ resource "aws_secretsmanager_secret" "bind_user_password" {
 resource "aws_secretsmanager_secret_version" "bind_user_password" {
   secret_id     = "${aws_secretsmanager_secret.bind_user_password.id}"
   secret_string = "${random_string.bind_user_password.result}"
-}
-
-resource "random_string" "nifi_user_password" {
-  length  = 40
-  special = false
-}
-
-resource "aws_secretsmanager_secret" "nifi_user_password" {
-  name = "${terraform.workspace}-nifi-user-password"
-  recovery_window_in_days = "${var.recovery_window_in_days}"
-}
-
-resource "aws_secretsmanager_secret_version" "nifi_user_password" {
-  secret_id     = "${aws_secretsmanager_secret.nifi_user_password.id}"
-  secret_string = "${random_string.nifi_user_password.result}"
 }
 
 resource "random_string" "discovery_api_user_password" {
@@ -111,11 +89,6 @@ output "keycloak_server_ip" {
 output "bind_user_password_secret_id" {
   description = "The SecretsManager ID for the bind user password"
   value       = "${aws_secretsmanager_secret_version.bind_user_password.arn}"
-}
-
-output "nifi_user_password_secret_id" {
-  description = "The SecretsManager ID for the nifi user password"
-  value       = "${aws_secretsmanager_secret_version.nifi_user_password.arn}"
 }
 
 output "discovery_api_user_password_secret_id" {
