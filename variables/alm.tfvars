@@ -10,7 +10,7 @@ root_dns_zone = "internal.smartcolumbusos.com"
 
 openvpn_admin_password_secret_arn = "arn:aws:secretsmanager:us-east-2:199837183662:secret:openvpn_admin_password-beMNOa"
 
-vpn_ami_id = "ami-029a596296e84f7cc"
+vpn_ami_id = "ami-0a5aef046a3a6e7bf"
 
 vpc_private_subnets = ["10.0.0.0/19", "10.0.64.0/19", "10.0.128.0/19"]
 

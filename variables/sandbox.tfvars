@@ -8,7 +8,7 @@ prod_role_arn = "arn:aws:iam::068920858268:role/admin_role"
 
 openvpn_admin_password_secret_arn = "arn:aws:secretsmanager:us-east-2:068920858268:secret:openvpn_admin_password-8p4kVH"
 
-vpn_ami_id = "ami-019341862bd36a337"
+vpn_ami_id = "ami-0a5aef046a3a6e7bf"
 
 docker_registry = "068920858268.dkr.ecr.us-east-2.amazonaws.com"
 
