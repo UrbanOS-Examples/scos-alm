@@ -306,7 +306,7 @@ locals {
   jenkins_port    = 8080
   jnlp_port       = 50000
   service_name    = "jenkins_master"
-  service_image   = "scos/jenkins-master:918a777041d3c4a3e6e563d08f06524cb53b341f"
+  service_image   = "scos/jenkins-master:f270c6d5a214b304443b2bf0ba59d8e5ccf88686"
   service_command = []
   directory_name  = "jenkins_home"
 }
