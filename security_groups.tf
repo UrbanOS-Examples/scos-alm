@@ -17,7 +17,7 @@ resource "aws_security_group_rule" "chatter_egress_internet" {
   type              = "egress"
 }
 
-resource "aws_security_group_rule" "chatter_ingress_self" {
+resource "aws_security_group_rule" "chatter_ingress_self_80" {
   description              = "Allow nodes to communicate with each other."
   protocol                 = "-1"
   security_group_id        = "${aws_security_group.chatter.id}"
@@ -27,7 +27,7 @@ resource "aws_security_group_rule" "chatter_ingress_self" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "chatter_ingress_self" {
+resource "aws_security_group_rule" "chatter_ingress_self_443" {
   description              = "Allow nodes to communicate with each other."
   protocol                 = "-1"
   security_group_id        = "${aws_security_group.chatter.id}"
@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "chatter_ingress_self" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "chatter_ingress_self" {
+resource "aws_security_group_rule" "chatter_ingress_self_50000" {
   description              = "Allow nodes to communicate with each other."
   protocol                 = "-1"
   security_group_id        = "${aws_security_group.chatter.id}"
@@ -47,7 +47,7 @@ resource "aws_security_group_rule" "chatter_ingress_self" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "chatter_ingress_self" {
+resource "aws_security_group_rule" "chatter_ingress_self_8080" {
   description              = "Allow nodes to communicate with each other."
   protocol                 = "-1"
   security_group_id        = "${aws_security_group.chatter.id}"
