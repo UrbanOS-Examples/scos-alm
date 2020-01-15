@@ -5,26 +5,40 @@ resource "aws_security_group" "chatter" {
   tags        = {
     Name = "Egress and internal chatter"
   }
-}
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-resource "aws_security_group_rule" "chatter_egress_internet" {
-  description       = "Allow nodes to egress to the Internet."
-  protocol          = "-1"
-  security_group_id = "${aws_security_group.chatter.id}"
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port         = 0
-  to_port           = 0
-  type              = "egress"
-}
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-resource "aws_security_group_rule" "chatter_ingress_self" {
-  description              = "Allow nodes to communicate with each other."
-  protocol                 = "-1"
-  security_group_id        = "${aws_security_group.chatter.id}"
-  source_security_group_id = "${aws_security_group.chatter.id}"
-  from_port                = 0
-  to_port                  = 65535
-  type                     = "ingress"
+  ingress {
+    from_port   = 50000
+    to_port     = 50000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group_rule" "allow_all_sg_to_eks_worker_sg" {
