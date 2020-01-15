@@ -27,15 +27,6 @@ resource "aws_security_group_rule" "chatter_ingress_self" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "allow_all_sg_to_eks_worker_sg" {
-  type                     = "ingress"
-  from_port                = 0
-  to_port                  = 0
-  protocol                 = "-1"
-  security_group_id        = "${aws_security_group.chatter.id}"
-  source_security_group_id = "${aws_security_group.allow_all.id}"
-}
-
 resource "aws_security_group" "allow_all" {
   name        = "allow_all"
   description = "Allow all inbound traffic"
