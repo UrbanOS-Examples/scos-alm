@@ -102,6 +102,13 @@
               "ec2:TerminateInstances"
             ],
             "Resource" : "*"
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "sts:AssumeRole"
+          ],
+          "Resource": "arn:aws:iam::993761728866:role/CostExplorer"
         }
     ]
 }
