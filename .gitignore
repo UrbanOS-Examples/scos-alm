@@ -3,3 +3,4 @@ terraform.tfstate.d
 *.out
 config-map-aws-auth_streaming-kube-*.yaml
 kubeconfig_streaming-kube-*
+lambda*.zip
