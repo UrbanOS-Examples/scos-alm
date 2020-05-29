@@ -32,16 +32,16 @@ data "template_file" "task_definition" {
   template = "${file("templates/task_definition.json.tpl")}"
 
   vars {
-    name           = "${local.service_name}"
-    image          = "${var.docker_registry}/${local.service_image}"
-    memory         = "3072"
-    command        = "${jsonencode(local.service_command)}"
-    jenkins_port   = "${local.jenkins_port}"
-    jnlp_port      = "${local.jnlp_port}"
-    region         = "${var.region}"
-    log_group      = "${module.jenkins_service.log_group}"
-    elb_name       = "${aws_elb.service.name}"
-    directory_name = "${local.directory_name}"
+    name              = "${local.service_name}"
+    image             = "${var.docker_registry}/${local.service_image}"
+    memory            = "3072"
+    command           = "${jsonencode(local.service_command)}"
+    jenkins_port      = "${local.jenkins_port}"
+    jnlp_port         = "${local.jnlp_port}"
+    region            = "${var.region}"
+    log_group         = "${module.jenkins_service.log_group}"
+    elb_name          = "${aws_elb.service.name}"
+    directory_name    = "${local.directory_name}"
     ldap_binduser_pwd = "${random_string.bind_user_password.result}"
   }
 }
@@ -64,8 +64,9 @@ resource "aws_lb_target_group" "jenkins_relay" {
   port     = 8080
   protocol = "HTTP"
   vpc_id   = "${module.vpc.vpc_id}"
+
   health_check {
-    path = "/login"
+    path    = "/login"
     matcher = "200"
   }
 }
@@ -83,30 +84,33 @@ resource "aws_route53_record" "jenkins_relay" {
 }
 
 resource "aws_lb" "jenkins_relay" {
-  name     = "${terraform.workspace}-jenkins-relay"
+  name               = "${terraform.workspace}-jenkins-relay"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [
+
+  security_groups = [
     "${aws_security_group.load_balancer.id}",
-    "${aws_security_group.jenkins_relay.id}"
+    "${aws_security_group.jenkins_relay.id}",
   ]
+
   subnets = ["${module.vpc.public_subnets}"]
 }
 
 resource "aws_security_group" "jenkins_relay" {
   name   = "${terraform.workspace}-jenkins-relay"
-  vpc_id   = "${module.vpc.vpc_id}"
+  vpc_id = "${module.vpc.vpc_id}"
 
   ingress {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
   egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -139,35 +143,35 @@ resource "aws_lb_listener_rule" "jenkins_relay" {
   }
 
   condition {
-    field  = "path-pattern"
-    values = ["/github-webhook/"]
+    path_pattern {
+      values = ["/github-webhook/"]
+    }
   }
 }
 
 module "jenkins_cluster" {
   source = "github.com/SmartColumbusOS/terraform-aws-ecs-cluster-1"
+
   # source  = "infrablocks/ecs-cluster/aws"
   # version = "0.2.5"
 
   region     = "${var.region}"
   vpc_id     = "${module.vpc.vpc_id}"
   subnet_ids = "${join(",",module.vpc.private_subnets)}"
-
   component             = "${local.component}"
   deployment_identifier = "${terraform.workspace}"
-
   cluster_name                         = "${terraform.workspace}_jenkins_cluster"
   cluster_instance_ssh_public_key_path = "${var.cluster_instance_ssh_public_key_path}"
   cluster_instance_type                = "${var.cluster_instance_type}"
   cluster_instance_user_data_template  = "${data.template_file.instance_user_data.rendered}"
   cluster_instance_iam_policy_contents = "${file("files/instance_policy.json")}"
-  cluster_target_group_arns            = [
-    "${aws_lb_target_group.jenkins_relay.arn}"
+  cluster_target_group_arns = [
+    "${aws_lb_target_group.jenkins_relay.arn}",
   ]
-
-  cluster_minimum_size     = "${var.cluster_minimum_size}"
-  cluster_maximum_size     = "${var.cluster_maximum_size}"
-  allowed_cidrs            = "${var.allowed_cidrs}"
+  cluster_minimum_size = "${var.cluster_minimum_size}"
+  cluster_maximum_size = "${var.cluster_maximum_size}"
+  allowed_cidrs        = "${var.allowed_cidrs}"
+  include_default_ingress_rule = false
 }
 
 resource "aws_route53_record" "jenkins" {
@@ -184,16 +188,17 @@ resource "aws_route53_record" "jenkins" {
 
 resource "aws_elb" "service" {
   subnets = ["${module.vpc.private_subnets}"]
+
   security_groups = [
-    "${aws_security_group.load_balancer.id}"
+    "${aws_security_group.load_balancer.id}",
   ]
 
   internal = "true"
-  name = "elb-${local.component}-${terraform.workspace}"
+  name     = "elb-${local.component}-${terraform.workspace}"
 
-  cross_zone_load_balancing = true
-  idle_timeout = 180
-  connection_draining = true
+  cross_zone_load_balancing   = true
+  idle_timeout                = 180
+  connection_draining         = true
   connection_draining_timeout = 60
 
   listener {
@@ -202,6 +207,7 @@ resource "aws_elb" "service" {
     lb_port           = 80
     lb_protocol       = "http"
   }
+
   listener {
     instance_port      = "${local.jenkins_port}"
     instance_protocol  = "http"
@@ -209,6 +215,7 @@ resource "aws_elb" "service" {
     lb_protocol        = "https"
     ssl_certificate_id = "${module.tls_certificate.arn}"
   }
+
   listener {
     instance_port     = "${local.jnlp_port}"
     instance_protocol = "tcp"
@@ -217,49 +224,51 @@ resource "aws_elb" "service" {
   }
 
   health_check {
-    healthy_threshold = 3
+    healthy_threshold   = 3
     unhealthy_threshold = 3
-    timeout = 15
-    target = "HTTP:8080/login"
-    interval = 120
+    timeout             = 15
+    target              = "HTTP:8080/login"
+    interval            = 120
   }
 
   tags {
-    Name = "elb-${local.component}-${terraform.workspace}"
-    Component = "${local.component}"
+    Name                 = "elb-${local.component}-${terraform.workspace}"
+    Component            = "${local.component}"
     DeploymentIdentifier = "${terraform.workspace}"
-    Service = "${terraform.workspace}_${local.service_name}"
+    Service              = "${terraform.workspace}_${local.service_name}"
   }
 }
 
 resource "aws_security_group" "load_balancer" {
-  name = "elb-${local.component}-${terraform.workspace}"
-  vpc_id = "${module.vpc.vpc_id}"
+  name        = "elb-${local.component}-${terraform.workspace}"
+  vpc_id      = "${module.vpc.vpc_id}"
   description = "ELB for component: ${local.component}, service: ${terraform.workspace}_${local.service_name}, deployment: ${terraform.workspace}"
 
   ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["${var.allowed_cidrs}"]
   }
+
   ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["${var.allowed_cidrs}"]
   }
+
   ingress {
-    from_port = "${local.jnlp_port}"
-    to_port = "${local.jnlp_port}"
-    protocol = "tcp"
+    from_port   = "${local.jnlp_port}"
+    to_port     = "${local.jnlp_port}"
+    protocol    = "tcp"
     cidr_blocks = ["${var.allowed_cidrs}"]
   }
 
   egress {
-    from_port = 1
-    to_port   = 65535
-    protocol  = "tcp"
+    from_port   = 1
+    to_port     = 65535
+    protocol    = "tcp"
     cidr_blocks = ["${module.vpc.vpc_cidr_block}"]
   }
 }
@@ -310,6 +319,7 @@ locals {
   service_command = []
   directory_name  = "jenkins_home"
 }
+
 variable "docker_registry" {
   description = "The URL of the docker registry"
 }

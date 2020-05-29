@@ -1,5 +1,5 @@
 module "vpn" {
-  source = "git@github.com:SmartColumbusOS/scos-tf-vpn?ref=1.0.0"
+  source = "git@github.com:SmartColumbusOS/scos-tf-vpn?ref=1.1.0"
 
   private_subnet_id = "${module.vpc.private_subnets[0]}"
   public_subnet_id  = "${module.vpc.public_subnets[0]}"
