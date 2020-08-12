@@ -1,5 +1,5 @@
 module "iam_stack" {
-  source                  = "git@github.com:SmartColumbusOS/scos-tf-iam?ref=1.1.1"
+  source                  = "git@github.com:SmartColumbusOS/scos-tf-iam?ref=1.2.0"
   vpc_id                  = "${module.vpc.vpc_id}"
   subnet_ids              = ["${module.vpc.private_subnets}"]
   ssh_key                 = "${aws_key_pair.cloud_key.key_name}"
@@ -7,7 +7,7 @@ module "iam_stack" {
   realm_cidr              = "10.0.0.0/8"
   iam_hostname_prefix     = "iam"
   zone_id                 = "${aws_route53_zone.public_hosted_zone.zone_id}"
-  zone_name               = "${aws_route53_zone.public_hosted_zone.name}"
+  zone_name               = "${replace(aws_route53_zone.public_hosted_zone.name, "/\\.$/", "")}"
   realm_name              = "${var.kerberos_realm_name}"
   vpc_cidr                = "${var.vpc_cidr}"
   freeipa_replica_count   = "${var.freeipa_replica_count}"
