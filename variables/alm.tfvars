@@ -28,8 +28,6 @@ cluster_minimum_size = 2
 
 cluster_maximum_size = 3
 
-alm_account_id = "199837183662"
-
 alm_role_arn = "arn:aws:iam::199837183662:role/jenkins_role"
 
 alm_state_bucket_name = "scos-alm-terraform-state"

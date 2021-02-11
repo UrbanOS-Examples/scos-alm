@@ -20,8 +20,6 @@ cluster_minimum_size = 2
 
 cluster_maximum_size = 3
 
-alm_account_id = "068920858268"
-
 alm_role_arn = "arn:aws:iam::068920858268:role/admin_role"
 
 alm_state_bucket_name = "scos-sandbox-terraform-state"
