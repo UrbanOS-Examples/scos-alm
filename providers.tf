@@ -1,33 +1,33 @@
 provider "null" {
-  version = "1.0.0"
+  version = "~> 2.1"
 }
 
 provider "http" {
-  version = "1.0.1"
+  version = "~> 1.1"
 }
 
 provider "random" {
-  version = "2.0.0"
+  version = "~> 2.1"
 }
 
 provider "archive" {
-  version = "1.1.0"
+  version = "~> 1.2"
 }
 
 provider "local" {
-  version = "1.1.0"
+  version = "~> 1.2"
 }
 
 provider "external" {
-  version = "1.0.0"
+  version = "~> 1.1"
 }
 
 provider "template" {
-  version = "1.0.0"
+  version = "~> 2.1"
 }
 
 provider "aws" {
-  version = "2.54"
+  version = "~> 3.0"
   region  = "${var.region}"
 
   assume_role {

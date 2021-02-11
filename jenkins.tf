@@ -47,7 +47,7 @@ data "template_file" "task_definition" {
 }
 
 module "jenkins_mount_targets" {
-  source  = "git@github.com:SmartColumbusOS/scos-tf-efs-mount-target?ref=1.0.0"
+  source  = "git@github.com:SmartColumbusOS/scos-tf-efs-mount-target?ref=common-512"
   sg_name = "jenkins-data"
   vpc_id  = "${module.vpc.vpc_id}"
   subnet  = "${module.vpc.private_subnets[0]}"
@@ -150,7 +150,7 @@ resource "aws_lb_listener_rule" "jenkins_relay" {
 }
 
 module "jenkins_cluster" {
-  source = "github.com/SmartColumbusOS/terraform-aws-ecs-cluster-1"
+  source = "github.com/SmartColumbusOS/terraform-aws-ecs-cluster-1?ref=common-512"
 
   # source  = "infrablocks/ecs-cluster/aws"
   # version = "0.2.5"
