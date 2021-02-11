@@ -277,7 +277,7 @@ resource "aws_security_group" "load_balancer" {
 
 module "jenkins_service" {
   source  = "infrablocks/ecs-service/aws"
-  version = "0.1.10"
+  version = "2.5.0"
 
   region = var.region
   vpc_id = module.vpc.vpc_id

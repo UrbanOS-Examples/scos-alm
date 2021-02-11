@@ -1,6 +1,6 @@
 # FUTURE FOOTGUN - THIS AND NEWER AWS PROVIDER DO NOT PLAY NICE, BUT TO UPDATE THE CERT NEEDS TO BE REBUILT
 module "tls_certificate" {
-  source = "github.com/azavea/terraform-aws-acm-certificate?ref=0.1.0"
+  source = "github.com/azavea/terraform-aws-acm-certificate?ref=3.0.0"
 
   domain_name               = "*.${aws_route53_zone.public_hosted_zone.name}"
   subject_alternative_names = []
