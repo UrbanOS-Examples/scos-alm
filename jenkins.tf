@@ -32,7 +32,7 @@ data "template_file" "task_definition" {
 
   vars = {
     name              = local.service_name
-    image             = "${var.docker_registry}/${local.service_image}"
+    image             = var.jenkins_docker_image
     memory            = "3072"
     command           = jsonencode(local.service_command)
     jenkins_port      = local.jenkins_port
@@ -286,7 +286,7 @@ module "jenkins_service" {
   deployment_identifier = terraform.workspace
 
   service_name                       = local.service_name
-  service_image                      = "${var.docker_registry}/${local.service_image}"
+  service_image                      = var.jenkins_docker_image
   service_port                       = local.jenkins_port
   service_task_container_definitions = data.template_file.task_definition.rendered
 
@@ -317,13 +317,12 @@ locals {
   jenkins_port    = 8080
   jnlp_port       = 50000
   service_name    = "jenkins_master"
-  service_image   = "scos/jenkins-master:8caf1a28d2b0bfdb2e28df7e740f244f9e02783c"
   service_command = []
   directory_name  = "jenkins_home"
 }
 
-variable "docker_registry" {
-  description = "The URL of the docker registry"
+variable "jenkins_docker_image" {
+  description = "The full path to the Docker image for the Jenkins Master"
 }
 
 variable "cluster_instance_type" {
