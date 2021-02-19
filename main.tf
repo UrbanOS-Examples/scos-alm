@@ -18,10 +18,6 @@ variable "alm_state_bucket_name" {
   description = "The name of the S3 state bucket for ALM"
 }
 
-data "aws_secretsmanager_secret_version" "openvpn_admin_password" {
-  secret_id = var.openvpn_admin_password_secret_arn
-}
-
 resource "aws_key_pair" "cloud_key" {
   key_name   = "${terraform.workspace}_cloud_key"
   public_key = var.key_pair_public_key
@@ -49,10 +45,6 @@ variable "allowed_cidrs" {
   description = "The CIDRs allowed access to containers"
   type        = list(string)
   default     = ["0.0.0.0/0"]
-}
-
-variable "openvpn_admin_password_secret_arn" {
-  description = "The arn of the openvpn admin password."
 }
 
 variable "key_pair_public_key" {

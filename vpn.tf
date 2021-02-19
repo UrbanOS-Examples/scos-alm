@@ -1,3 +1,7 @@
+data "aws_secretsmanager_secret_version" "openvpn_admin_password" {
+  secret_id = var.openvpn_admin_password_secret_arn
+}
+
 module "vpn" {
   source = "git@github.com:SmartColumbusOS/scos-tf-vpn?ref=common-512"
 
@@ -29,6 +33,10 @@ resource "aws_route53_record" "vpn" {
 variable "openvpn_admin_username" {
   description = "Username for the OpenVPN Access Server administrative user"
   default     = "openvpn"
+}
+
+variable "openvpn_admin_password_secret_arn" {
+  description = "The arn of the openvpn admin password."
 }
 
 variable "vpn_ami_id" {
