@@ -173,6 +173,30 @@ module "jenkins_cluster" {
   include_default_ingress_rule = false
 }
 
+resource "aws_security_group_rule" "jenkins_ecs_inbound_jenkins" {
+  type = "ingress"
+
+  security_group_id = module.jenkins_cluster.security_group_id
+
+  protocol  = "tcp"
+  from_port = local.jenkins_port
+  to_port   = local.jenkins_port
+
+  cidr_blocks = var.allowed_cidrs
+}
+
+resource "aws_security_group_rule" "jenkins_ecs_inbound_jnlp" {
+  type = "ingress"
+
+  security_group_id = module.jenkins_cluster.security_group_id
+
+  protocol  = "tcp"
+  from_port = local.jnlp_port
+  to_port   = local.jnlp_port
+
+  self = true
+}
+
 resource "aws_route53_record" "jenkins" {
   zone_id = aws_route53_zone.public_hosted_zone.zone_id
   name    = "jenkins"

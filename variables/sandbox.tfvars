@@ -10,7 +10,7 @@ openvpn_admin_password_secret_arn = "arn:aws:secretsmanager:us-east-2:0689208582
 
 vpn_ami_id = "ami-04f63e8f7a845159a"
 
-jenkins_docker_image = "068920858268.dkr.ecr.us-east-2.amazonaws.com/scos/jenkins-master:ba45518a56afa6966bbde5d9d1e3647848f8195d"
+jenkins_docker_image = "068920858268.dkr.ecr.us-east-2.amazonaws.com/scos/jenkins-master:8caf1a28d2b0bfdb2e28df7e740f244f9e02783c"
 
 cluster_instance_ssh_public_key_path = "files/oasis_id_rsa.pub"
 
