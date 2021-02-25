@@ -13,6 +13,7 @@ module "iam_stack" {
   freeipa_replica_count   = var.freeipa_replica_count
   recovery_window_in_days = var.recovery_window_in_days
   alb_certificate         = module.tls_certificate.arn
+  freeipa_version         = "4.8.6-1.fc32"
 
   extra_users_count = 2
   extra_users = [
