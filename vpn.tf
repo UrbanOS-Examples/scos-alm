@@ -3,7 +3,7 @@ data "aws_secretsmanager_secret_version" "openvpn_admin_password" {
 }
 
 module "vpn" {
-  source = "git@github.com:SmartColumbusOS/scos-tf-vpn?ref=common-512"
+  source = "git@github.com:SmartColumbusOS/scos-tf-vpn?ref=2.0.0"
 
   private_subnet_id = module.vpc.private_subnets[0]
   public_subnet_id  = module.vpc.public_subnets[0]
