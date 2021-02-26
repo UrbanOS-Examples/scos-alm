@@ -1,8 +1,8 @@
 module "monitoring" {
-  source = "git@github.com:SmartColumbusOS/scos-tf-monitoring.git?ref=1.0.2"
+  source = "git@github.com:SmartColumbusOS/scos-tf-monitoring.git?ref=2.0.0"
 
-  alarms_slack_channel_name = "${var.alarms_slack_channel_name}"
-  alarms_slack_path         = "${var.alarms_slack_path}"
+  alarms_slack_channel_name = var.alarms_slack_channel_name
+  alarms_slack_path         = var.alarms_slack_path
 }
 
 variable "alarms_slack_path" {
@@ -12,3 +12,4 @@ variable "alarms_slack_path" {
 variable "alarms_slack_channel_name" {
   description = "Name of the Slack channel for monitoring alarms"
 }
+

@@ -8,9 +8,9 @@ prod_role_arn = "arn:aws:iam::068920858268:role/admin_role"
 
 openvpn_admin_password_secret_arn = "arn:aws:secretsmanager:us-east-2:068920858268:secret:openvpn_admin_password-8p4kVH"
 
-vpn_ami_id = "ami-0a5aef046a3a6e7bf"
+vpn_ami_id = "ami-04f63e8f7a845159a"
 
-docker_registry = "068920858268.dkr.ecr.us-east-2.amazonaws.com"
+jenkins_docker_image = "068920858268.dkr.ecr.us-east-2.amazonaws.com/scos/jenkins-master:8caf1a28d2b0bfdb2e28df7e740f244f9e02783c"
 
 cluster_instance_ssh_public_key_path = "files/oasis_id_rsa.pub"
 
@@ -19,8 +19,6 @@ cluster_instance_type = "t2.medium"
 cluster_minimum_size = 2
 
 cluster_maximum_size = 3
-
-alm_account_id = "068920858268"
 
 alm_role_arn = "arn:aws:iam::068920858268:role/admin_role"
 

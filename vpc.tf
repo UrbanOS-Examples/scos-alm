@@ -1,26 +1,26 @@
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "1.32.0"
+  version = "2.70.0"
 
-  name = "${var.vpc_name}"
-  cidr = "${var.vpc_cidr}"
-  azs  = "${var.vpc_azs}"
+  name = var.vpc_name
+  cidr = var.vpc_cidr
+  azs  = var.vpc_azs
 
-  private_subnets = "${var.vpc_private_subnets}"
-  public_subnets  = "${var.vpc_public_subnets}"
+  private_subnets = var.vpc_private_subnets
+  public_subnets  = var.vpc_public_subnets
 
-  enable_nat_gateway = "${var.vpc_enable_nat_gateway}"
+  enable_nat_gateway = var.vpc_enable_nat_gateway
   single_nat_gateway = true
 
-  enable_vpn_gateway       = "${var.vpc_enable_vpn_gateway}"
-  enable_s3_endpoint       = "${var.vpc_enable_s3_endpoint}"
-  enable_dynamodb_endpoint = "${var.vpc_enable_dynamodb_endpoint}"
-  enable_dns_hostnames     = "${var.vpc_enable_dns_hostnames}"
+  enable_vpn_gateway       = var.vpc_enable_vpn_gateway
+  enable_s3_endpoint       = var.vpc_enable_s3_endpoint
+  enable_dynamodb_endpoint = var.vpc_enable_dynamodb_endpoint
+  enable_dns_hostnames     = var.vpc_enable_dns_hostnames
 
   tags = {
-    Owner       = "${var.owner}"
-    Environment = "${var.environment}"
-    Name        = "${var.vpc_name}"
+    Owner       = var.owner
+    Environment = var.environment
+    Name        = var.vpc_name
   }
 }
 
@@ -80,35 +80,36 @@ variable "vpc_enable_dns_hostnames" {
 
 output "vpc_id" {
   description = "The ID of the VPC"
-  value       = "${module.vpc.vpc_id}"
+  value       = module.vpc.vpc_id
 }
 
 output "public_route_table_ids" {
   description = "Public route table ids"
-  value       = "${module.vpc.public_route_table_ids}"
+  value       = module.vpc.public_route_table_ids
 }
 
 output "private_route_table_ids" {
   description = "Private route table ids"
-  value       = "${module.vpc.private_route_table_ids}"
+  value       = module.vpc.private_route_table_ids
 }
 
 output "vpc_cidr_block" {
   description = "CIDR block for the VPC"
-  value       = "${module.vpc.vpc_cidr_block}"
+  value       = module.vpc.vpc_cidr_block
 }
 
 output "private_subnets" {
   description = "List of IDs of private subnets"
-  value       = ["${module.vpc.private_subnets}"]
+  value       = [module.vpc.private_subnets]
 }
 
 output "public_subnets" {
   description = "List of IDs of public subnets"
-  value       = ["${module.vpc.public_subnets}"]
+  value       = [module.vpc.public_subnets]
 }
 
 output "nat_public_ips" {
   description = "List of public Elastic IPs created for AWS NAT Gateway"
-  value       = ["${module.vpc.nat_public_ips}"]
+  value       = [module.vpc.nat_public_ips]
 }
+
