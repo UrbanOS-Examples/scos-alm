@@ -194,7 +194,7 @@ resource "aws_security_group_rule" "jenkins_ecs_inbound_jnlp" {
   from_port = local.jnlp_port
   to_port   = local.jnlp_port
 
-  self = true
+  cidr_blocks = var.allowed_cidrs
 }
 
 resource "aws_route53_record" "jenkins" {
