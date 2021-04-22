@@ -149,7 +149,7 @@ resource "aws_lb_listener_rule" "jenkins_relay" {
 }
 
 module "jenkins_cluster" {
-  source = "github.com/SmartColumbusOS/terraform-aws-ecs-cluster-1?ref=2.0.0"
+  source = "github.com/SmartColumbusOS/terraform-aws-ecs-cluster-1?ref=2.1.1"
 
   # source  = "infrablocks/ecs-cluster/aws"
   # version = "0.2.5"
