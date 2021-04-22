@@ -24,7 +24,7 @@ mount_successful=1
 while [ $res -ne 0 ] ; do
   c=$((c+1))
   echo "Attempting to mount ${mount_point} drive" >> $log
-  mount ${mount_point}
+  mount -o tls ${mount_point}
   res=`echo $?`
   if [ $res -eq 0 ] ; then
     mount_successful=0
