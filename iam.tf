@@ -1,5 +1,5 @@
 module "iam_stack" {
-  source                  = "git@github.com:SmartColumbusOS/scos-tf-iam?ref=2.0.0"
+  source                  = "git@github.com:SmartColumbusOS/scos-tf-iam?ref=3.0.0"
   vpc_id                  = module.vpc.vpc_id
   subnet_ids              = module.vpc.private_subnets
   ssh_key                 = aws_key_pair.cloud_key.key_name
@@ -10,7 +10,6 @@ module "iam_stack" {
   zone_name               = replace(aws_route53_zone.public_hosted_zone.name, "/\\.$/", "")
   realm_name              = var.kerberos_realm_name
   vpc_cidr                = var.vpc_cidr
-  freeipa_replica_count   = var.freeipa_replica_count
   recovery_window_in_days = var.recovery_window_in_days
   alb_certificate         = module.tls_certificate.arn
   freeipa_version         = "4.8.6-1.fc32"
@@ -69,11 +68,6 @@ variable "kerberos_realm_name" {
   default     = "internal.smartcolumbusos.com"
 }
 
-variable "freeipa_replica_count" {
-  description = "The number of freeipa replicas to deploy"
-  default     = 1
-}
-
 variable "recovery_window_in_days" {
   description = "How long to allow secrets to be recovered if they are deleted"
   default     = 30
@@ -105,9 +99,3 @@ output "freeipa_master_instance_id" {
   description = "The instance id the iam-master ec2 instance"
   value       = module.iam_stack.freeipa_master_instance_id
 }
-
-output "freeipa_replica_instance_ids" {
-  description = "The instance id the iam-master ec2 instance"
-  value       = [module.iam_stack.freeipa_replica_instance_ids]
-}
-
